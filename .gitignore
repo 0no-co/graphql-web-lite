@@ -1,0 +1,6 @@
+yarn-error.log
+dist/
+node_modules/
+coverage/
+/cypress/videos/**
+/cypress/screenshots/**
