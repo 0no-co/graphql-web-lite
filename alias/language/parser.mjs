@@ -199,14 +199,17 @@ const typeCondition = match('_typecondition', x => ({
   :${ignored}?
 `;
 
-const inlineFragment = match(Kind.INLINE_FRAGMENT, x => ({
-  kind: x.tag,
-  typeCondition: x[0],
-  directives: x[1],
-  selectionSet: x[2]
-}))`
+const inlineFragment = match(Kind.INLINE_FRAGMENT, x => {
+  let i = 0;
+  return {
+    kind: x.tag,
+    typeCondition: x[i].tag === '_typecondition' ? x[i++] : undefined,
+    directives: x[i++],
+    selectionSet: x[i]
+  };
+})`
   (?: ${'...'} ${ignored}?)
-  ${typeCondition}
+  ${typeCondition}?
   ${directives}
   ${selectionSet}
 `;
