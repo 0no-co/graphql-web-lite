@@ -7,6 +7,7 @@ import { terser } from 'rollup-plugin-terser';
 
 import babelModularGraphQL from 'babel-plugin-modular-graphql';
 import babelTransformDevAssert from '../babel/transformDevAssert.mjs';
+import babelTransformObjectFreeze from '../babel/transformObjectFreeze.mjs';
 
 const cwd = process.cwd();
 const externalModules = ['dns', 'fs', 'path', 'url'];
@@ -61,6 +62,7 @@ export default {
       presets: [],
       plugins: [
         babelTransformDevAssert,
+        babelTransformObjectFreeze,
         babelModularGraphQL,
         'reghex/babel',
       ],
