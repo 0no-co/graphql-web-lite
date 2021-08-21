@@ -5,6 +5,7 @@ import replace from '@rollup/plugin-replace';
 import { babel } from '@rollup/plugin-babel';
 import { terser } from 'rollup-plugin-terser';
 
+import babelModularGraphQL from 'babel-plugin-modular-graphql';
 import babelTransformDevAssert from '../babel/transformDevAssert.mjs';
 
 const cwd = process.cwd();
@@ -60,7 +61,7 @@ export default {
       presets: [],
       plugins: [
         babelTransformDevAssert,
-        'babel-plugin-modular-graphql',
+        babelModularGraphQL,
         'reghex/babel',
       ],
     }),
