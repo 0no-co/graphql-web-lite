@@ -4,9 +4,6 @@ export {
   parse,
   parseValue,
   parseType,
-} from './language/parser.mjs';
-
-export {
   print,
   visit,
   visitInParallel,
