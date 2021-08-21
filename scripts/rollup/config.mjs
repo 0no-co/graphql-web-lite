@@ -5,8 +5,6 @@ import { babel } from '@rollup/plugin-babel';
 import { terser } from 'rollup-plugin-terser';
 
 const cwd = process.cwd();
-const base = path.join(cwd, 'node_modules/graphql/');
-const baseAlias = path.join(cwd, 'alias/');
 const externalModules = ['dns', 'fs', 'path', 'url'];
 const externalPredicate = new RegExp(`^(${externalModules.join('|')})($|/)`);
 
@@ -28,6 +26,23 @@ export default {
   ...config,
   shimMissingExports: true,
   plugins: [
+    {
+      async resolveId(source, importer) {
+        if (source.startsWith('.') && importer) {
+          source = path.resolve(path.dirname(importer), source);
+        }
+
+        const base = path.join(cwd, 'node_modules/graphql/');
+        const baseSource = path.relative(base, source);
+        if (baseSource.startsWith('..')) {
+          return null;
+        }
+
+        const aliasSource = path.join(cwd, 'alias/', baseSource);
+        return this.resolve(aliasSource, importer, { skipSelf: true });
+      },
+    },
+
     resolve({
       extensions: ['.mjs', '.js'],
       mainFields: ['module', 'browser', 'main'],
@@ -38,22 +53,12 @@ export default {
     babel({
       babelrc: false,
       babelHelpers: 'bundled',
-      exclude: 'node_modules/**',
       presets: [],
       plugins: [
         'babel-plugin-modular-graphql',
         'reghex/babel',
       ],
     }),
-
-    {
-      async resolveId(source, importer) {
-        const baseSource = path.relative(base, source);
-        if (baseSource.startsWith('..')) return null;
-        const aliasSource = path.join(baseAlias, baseSource);
-        return this.resolve(aliasSource, importer, { skipSelf: true });
-      },
-    },
   ],
 
   output: [
