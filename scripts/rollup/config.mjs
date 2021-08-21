@@ -1,8 +1,11 @@
 import * as path from 'path';
 
 import resolve from '@rollup/plugin-node-resolve';
+import replace from '@rollup/plugin-replace';
 import { babel } from '@rollup/plugin-babel';
 import { terser } from 'rollup-plugin-terser';
+
+import babelTransformDevAssert from '../babel/transformDevAssert.mjs';
 
 const cwd = process.cwd();
 const externalModules = ['dns', 'fs', 'path', 'url'];
@@ -12,6 +15,7 @@ const config = {
   input: {
     graphql: './alias/index.mjs',
   },
+  onwarn() {},
   external(id) {
     return externalPredicate.test(id);
   },
@@ -55,6 +59,7 @@ export default {
       babelHelpers: 'bundled',
       presets: [],
       plugins: [
+        babelTransformDevAssert,
         'babel-plugin-modular-graphql',
         'reghex/babel',
       ],
@@ -88,6 +93,10 @@ export default {
       strict: false,
       format: 'esm',
       plugins: [
+        replace({
+          'process.env.NODE_ENV': JSON.stringify('production')
+        }),
+
         terser({
           warnings: true,
           ecma: 5,
