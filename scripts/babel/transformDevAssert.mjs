@@ -1,7 +1,7 @@
 const visited = 'visitedByTransformDevAssert';
 
 const warningDevCheckTemplate = `
-  if (process.env.NODE_ENV !== 'production') {
+  if (false) {
     NODE;
   }
 `.trim();
