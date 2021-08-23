@@ -41,5 +41,5 @@ jobs:
         uses: preactjs/compressed-size-action@v2
         with:
           pattern: '{demo/dist-graphql/**/*.js,demo/dist-lite/**/*.js}'
-          build-script: cd demo && yarn && yarn build
+          build-script: size-check
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
