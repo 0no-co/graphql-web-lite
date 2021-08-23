@@ -1,4 +1,5 @@
 import * as path from 'path';
+import { promises as fs } from 'fs';
 
 import resolve from '@rollup/plugin-node-resolve';
 import { babel } from '@rollup/plugin-babel';
@@ -101,6 +102,41 @@ export default {
           const aliasSource = path.join(aliasModule, graphqlEntry);
           const alias = await this.resolve(aliasSource, undefined, { skipSelf: true });
           return alias || target;
+        }
+
+        return null;
+      },
+
+      async renderChunk(_code, { fileName }) {
+        const name = fileName.replace(/\.m?js$/, '');
+
+        const getContents = async (extension) => {
+          try {
+            const name = fileName.replace(/\.m?js$/, '');
+            const contents = await fs.readFile(path.join(graphqlModule, name + extension));
+            return contents;
+          } catch (_error) {
+            return null;
+          }
+        }
+
+        const dts = await getContents('.d.ts');
+        const flow = await getContents('.js.flow');
+
+        if (dts) {
+          this.emitFile({
+            type: 'asset',
+            fileName: name + '.d.ts',
+            source: dts,
+          });
+        }
+
+        if (flow) {
+          this.emitFile({
+            type: 'asset',
+            fileName: name + '.js.flow',
+            source: flow,
+          });
         }
 
         return null;
