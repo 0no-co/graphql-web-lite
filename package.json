@@ -4,7 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build": "rollup -c scripts/rollup/config.js"
+    "build": "rollup -c scripts/rollup/config.js",
+    "size-check": "cd demo && yarn && yarn build"
   },
   "homepage": "https://github.com/kitten/graphql-web-lite",
   "bugs": {
