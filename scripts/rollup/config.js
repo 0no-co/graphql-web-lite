@@ -9,6 +9,8 @@ import babelModularGraphQL from 'babel-plugin-modular-graphql';
 import babelTransformDevAssert from '../babel/transformDevAssert.mjs';
 import babelTransformObjectFreeze from '../babel/transformObjectFreeze.mjs';
 
+import packageMetadata from './packageMetadata';
+
 const cwd = process.cwd();
 const graphqlModule = path.join(cwd, 'node_modules/graphql/');
 const virtualModule = path.join(cwd, 'virtual/');
@@ -105,6 +107,14 @@ export default {
         }
 
         return null;
+      },
+
+      async renderStart() {
+        this.emitFile({
+          type: 'asset',
+          fileName: 'package.json',
+          source: packageMetadata,
+        });
       },
 
       async renderChunk(_code, { fileName }) {
