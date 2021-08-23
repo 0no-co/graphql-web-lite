@@ -47,6 +47,9 @@ const plugin = ({ template, types: t }) => {
           }
 
           p.replaceWith(wrapWithDevCheck({ NODE: p.node }));
+        } else if (name === 'invariant') {
+          path.node[visited] = true;
+          path.node.arguments.length = 1;
         }
       },
     },
