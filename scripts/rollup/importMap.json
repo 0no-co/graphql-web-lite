@@ -63,17 +63,9 @@
     "local": "GraphQLIncludeDirective",
     "from": "graphql/type/directives"
   },
-  "GraphQLInputObjectType": {
-    "local": "GraphQLInputObjectType",
-    "from": "graphql/type/definition"
-  },
   "GraphQLInt": {
     "local": "GraphQLInt",
     "from": "graphql/type/scalars"
-  },
-  "GraphQLInterfaceType": {
-    "local": "GraphQLInterfaceType",
-    "from": "graphql/type/definition"
   },
   "GraphQLList": {
     "local": "GraphQLList",
@@ -106,10 +98,6 @@
   "GraphQLString": {
     "local": "GraphQLString",
     "from": "graphql/type/scalars"
-  },
-  "GraphQLUnionType": {
-    "local": "GraphQLUnionType",
-    "from": "graphql/type/definition"
   },
   "Kind": {
     "local": "Kind",
@@ -198,14 +186,6 @@
   "Source": {
     "local": "Source",
     "from": "graphql/language/source"
-  },
-  "Token": {
-    "local": "Token",
-    "from": "graphql/language/ast"
-  },
-  "TokenKind": {
-    "local": "TokenKind",
-    "from": "graphql/language/tokenKind"
   },
   "TypeInfo": {
     "local": "TypeInfo",
@@ -315,14 +295,6 @@
     "local": "__TypeKind",
     "from": "graphql/type/introspection"
   },
-  "assertAbstractType": {
-    "local": "assertAbstractType",
-    "from": "graphql/type/definition"
-  },
-  "assertCompositeType": {
-    "local": "assertCompositeType",
-    "from": "graphql/type/definition"
-  },
   "assertDirective": {
     "local": "assertDirective",
     "from": "graphql/type/directives"
@@ -337,10 +309,6 @@
   },
   "assertInputType": {
     "local": "assertInputType",
-    "from": "graphql/type/definition"
-  },
-  "assertInterfaceType": {
-    "local": "assertInterfaceType",
     "from": "graphql/type/definition"
   },
   "assertLeafType": {
@@ -375,10 +343,6 @@
     "local": "assertScalarType",
     "from": "graphql/type/definition"
   },
-  "assertSchema": {
-    "local": "assertSchema",
-    "from": "graphql/type/schema"
-  },
   "assertType": {
     "local": "assertType",
     "from": "graphql/type/definition"
@@ -403,17 +367,9 @@
     "local": "astFromValue",
     "from": "graphql/utilities/astFromValue"
   },
-  "buildASTSchema": {
-    "local": "buildASTSchema",
-    "from": "graphql/utilities/buildASTSchema"
-  },
   "buildClientSchema": {
     "local": "buildClientSchema",
     "from": "graphql/utilities/buildClientSchema"
-  },
-  "buildSchema": {
-    "local": "buildSchema",
-    "from": "graphql/utilities/buildASTSchema"
   },
   "coerceInputValue": {
     "local": "coerceInputValue",
@@ -547,10 +503,6 @@
     "local": "isInputType",
     "from": "graphql/type/definition"
   },
-  "isInterfaceType": {
-    "local": "isInterfaceType",
-    "from": "graphql/type/definition"
-  },
   "isIntrospectionType": {
     "local": "isIntrospectionType",
     "from": "graphql/type/introspection"
@@ -594,10 +546,6 @@
   "isScalarType": {
     "local": "isScalarType",
     "from": "graphql/type/definition"
-  },
-  "isSchema": {
-    "local": "isSchema",
-    "from": "graphql/type/schema"
   },
   "isSelectionNode": {
     "local": "isSelectionNode",
@@ -655,10 +603,6 @@
     "local": "isWrappingType",
     "from": "graphql/type/definition"
   },
-  "lexicographicSortSchema": {
-    "local": "lexicographicSortSchema",
-    "from": "graphql/utilities/lexicographicSortSchema"
-  },
   "locatedError": {
     "local": "locatedError",
     "from": "graphql/error/locatedError"
@@ -690,10 +634,6 @@
   "printLocation": {
     "local": "printLocation",
     "from": "graphql/language/printLocation"
-  },
-  "printSchema": {
-    "local": "printSchema",
-    "from": "graphql/utilities/printSchema"
   },
   "printSourceLocation": {
     "local": "printSourceLocation",
@@ -730,10 +670,6 @@
   "subscribe": {
     "local": "subscribe",
     "from": "graphql/subscription/subscribe"
-  },
-  "syntaxError": {
-    "local": "syntaxError",
-    "from": "graphql/error/syntaxError"
   },
   "typeFromAST": {
     "local": "typeFromAST",
