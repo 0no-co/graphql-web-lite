@@ -2,10 +2,12 @@ import * as path from 'path';
 import { promises as fs } from 'fs';
 
 import resolve from '@rollup/plugin-node-resolve';
+import buble from '@rollup/plugin-buble';
 import { babel } from '@rollup/plugin-babel';
 import { terser } from 'rollup-plugin-terser';
 
 import babelModularGraphQL from 'babel-plugin-modular-graphql';
+import babelTransformComputedProps from '../babel/transformComputedProps.mjs';
 import babelTransformDevAssert from '../babel/transformDevAssert.mjs';
 import babelTransformObjectFreeze from '../babel/transformObjectFreeze.mjs';
 
@@ -21,12 +23,11 @@ const externalModules = ['dns', 'fs', 'path', 'url'];
 const externalPredicate = new RegExp(`^(${externalModules.join('|')})($|/)`);
 
 const exports = {};
-const importMap = require('babel-plugin-modular-graphql/import-map.json');
-const excludeMap = new Set(['Lexer']);
+const importMap = require('./importMap.json');
 
 for (const key in importMap) {
   const { from, local } = importMap[key];
-  if (/\/jsutils\//g.test(from) || excludeMap.has(key)) continue;
+  if (/\/jsutils\//g.test(from)) continue;
 
   const name = from.replace(/^graphql\//, '');
   exports[name] = (exports[name] || '') + `export { ${key} } from '${EXTERNAL}'\n`;
@@ -167,9 +168,20 @@ export default {
       plugins: [
         babelTransformDevAssert,
         babelTransformObjectFreeze,
+        babelTransformComputedProps,
         babelModularGraphQL,
         'reghex/babel',
       ],
+    }),
+
+    buble({
+      transforms: {
+        unicodeRegExp: false,
+        dangerousForOf: true,
+        dangerousTaggedTemplateString: true,
+        asyncAwait: false,
+      },
+      objectAssign: 'Object.assign',
     }),
 
     terser({
