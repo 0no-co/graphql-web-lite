@@ -1,5 +1,4 @@
-import React from 'react';
-import { gql, useQuery } from 'urql';
+import { gql, useQuery } from '@urql/preact';
 
 const POKEMONS_QUERY = gql`
   query Pokemons {

@@ -1,5 +1,4 @@
-import React from 'react';
-import { render } from 'react-dom';
+import { render } from 'preact';
 import Pokemons from './Pokemons';
 
 const client = createClient({
