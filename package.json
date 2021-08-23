@@ -21,7 +21,7 @@
     "@rollup/plugin-node-resolve": "^13.0.4",
     "@sucrase/jest-plugin": "^2.1.1",
     "babel-plugin-modular-graphql": "^1.0.1",
-    "graphql": "^15.5.1",
+    "graphql": "^16.0.0-alpha.5",
     "jest": "^27.0.6",
     "reghex": "^3.0.0",
     "rollup": "^2.56.2",
