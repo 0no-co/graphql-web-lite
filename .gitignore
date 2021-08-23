@@ -4,3 +4,6 @@ node_modules/
 coverage/
 /cypress/videos/**
 /cypress/screenshots/**
+demo/yarn.lock
+demo/dist-graphql
+demo/dist-lite
