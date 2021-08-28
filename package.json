@@ -31,7 +31,6 @@
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-buble": "^0.21.3",
     "@rollup/plugin-node-resolve": "^13.0.4",
-    "@sucrase/jest-plugin": "^2.1.1",
     "babel-plugin-modular-graphql": "^1.0.1",
     "graphql": "^16.0.0-alpha.5",
     "husky-v4": "^4.3.8",
@@ -40,7 +39,8 @@
     "prettier": "^2.3.2",
     "reghex": "^3.0.2",
     "rollup": "^2.56.2",
-    "rollup-plugin-terser": "^7.0.2"
+    "rollup-plugin-terser": "^7.0.2",
+    "sucrase": "^3.20.1"
   },
   "prettier": {
     "singleQuote": true
@@ -54,8 +54,13 @@
     }
   },
   "jest": {
+    "moduleFileExtensions": [
+      "mjs",
+      "js"
+    ],
+    "transformIgnorePatterns": [],
     "transform": {
-      "\\.js$": "@sucrase/jest-plugin"
+      "\\.m?js$": "<rootDir>/scripts/jest/transform-esm.js"
     }
   }
 }

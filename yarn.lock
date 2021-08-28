@@ -588,13 +588,6 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@sucrase/jest-plugin@^2.1.1":
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/@sucrase/jest-plugin/-/jest-plugin-2.1.1.tgz#b1e5192e7057fec159151b6aed96eb5b3c08d5c4"
-  integrity sha512-1j+exUcbLRgka2lq/i0IVOYcmrMW1wYPtxJY/+RvZkAQG9GD7lygj5OiHWFKWmynltAg9+x1d5NWQQYNdBTkpQ==
-  dependencies:
-    sucrase "^3.18.0"
-
 "@tootallnate/once@1":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
@@ -2970,7 +2963,7 @@ strip-final-newline@^2.0.0:
   resolved "https://registry.yarnpkg.com/strip-final-newline/-/strip-final-newline-2.0.0.tgz#89b852fb2fcbe936f6f4b3187afb0a12c1ab58ad"
   integrity sha512-BrpvfNAE3dcvq7ll3xVumzjKjZQ5tI1sEUIKr3Uoks0XUl45St3FlatVqef9prk4jRDzhW6WZg+3bk93y6pLjA==
 
-sucrase@^3.18.0:
+sucrase@^3.20.1:
   version "3.20.1"
   resolved "https://registry.yarnpkg.com/sucrase/-/sucrase-3.20.1.tgz#1c055e97d0fab2f9857f02461364075b3a4ab226"
   integrity sha512-BIG59HaJOxNct9Va6KvT5yzBA/rcMGetzvZyTx0ZdCcspIbpJTPS64zuAfYlJuOj+3WaI5JOdA+F0bJQQi8ZiQ==
