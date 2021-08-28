@@ -30,13 +30,15 @@ for (const key in importMap) {
   if (/\/jsutils\//g.test(from)) continue;
 
   const name = from.replace(/^graphql\//, '');
-  exports[name] = (exports[name] || '') + `export { ${key} } from '${EXTERNAL}'\n`;
+  exports[name] =
+    (exports[name] || '') + `export { ${key} } from '${EXTERNAL}'\n`;
 
   const parts = name.split('/');
   for (let i = parts.length - 1; i > 0; i--) {
     const name = `${parts.slice(0, i).join('/')}/index`;
     const from = `./${parts.slice(i).join('/')}`;
-    exports[name] = (exports[name] || '') + `export { ${local} } from '${from}'\n`;
+    exports[name] =
+      (exports[name] || '') + `export { ${local} } from '${from}'\n`;
   }
 
   const index = `export { ${local} } from './${name}'\n`;
@@ -58,17 +60,14 @@ const manualChunks = (id, utils) => {
   }
 
   const { importers } = utils.getModuleInfo(id);
-  return importers.length === 1
-    ? manualChunks(importers[0], utils)
-    : 'shared';
+  return importers.length === 1 ? manualChunks(importers[0], utils) : 'shared';
 };
 
 export default {
-  input:
-    Object.keys(exports).reduce((input, key) => {
-      input[key] = path.join('./virtual', key);
-      return input;
-    }, {}),
+  input: Object.keys(exports).reduce((input, key) => {
+    input[key] = path.join('./virtual', key);
+    return input;
+  }, {}),
   external(id) {
     return externalPredicate.test(id);
   },
@@ -80,8 +79,7 @@ export default {
   plugins: [
     {
       async load(id) {
-        if (!id.startsWith(virtualModule))
-          return null;
+        if (!id.startsWith(virtualModule)) return null;
 
         const entry = path.relative(virtualModule, id).replace(/\.m?js$/, '');
         return exports[entry] || null;
@@ -91,19 +89,26 @@ export default {
         if (!source.startsWith('.') && !source.startsWith('virtual/'))
           return null;
 
-        const target = path.join(importer ? path.dirname(importer) : cwd, source);
+        const target = path.join(
+          importer ? path.dirname(importer) : cwd,
+          source
+        );
 
         const virtualEntry = path.relative(virtualModule, target);
         if (!virtualEntry.startsWith('../')) {
           const aliasSource = path.join(aliasModule, virtualEntry);
-          const alias = await this.resolve(aliasSource, undefined, { skipSelf: true });
+          const alias = await this.resolve(aliasSource, undefined, {
+            skipSelf: true,
+          });
           return alias || target;
         }
 
         const graphqlEntry = path.relative(graphqlModule, target);
         if (!graphqlEntry.startsWith('../')) {
           const aliasSource = path.join(aliasModule, graphqlEntry);
-          const alias = await this.resolve(aliasSource, undefined, { skipSelf: true });
+          const alias = await this.resolve(aliasSource, undefined, {
+            skipSelf: true,
+          });
           return alias || target;
         }
 
@@ -124,12 +129,14 @@ export default {
         const getContents = async (extension) => {
           try {
             const name = fileName.replace(/\.m?js$/, '');
-            const contents = await fs.readFile(path.join(graphqlModule, name + extension));
+            const contents = await fs.readFile(
+              path.join(graphqlModule, name + extension)
+            );
             return contents;
           } catch (_error) {
             return null;
           }
-        }
+        };
 
         const dts = await getContents('.d.ts');
         const flow = await getContents('.js.flow');
@@ -200,7 +207,7 @@ export default {
         sequences: false,
         loops: false,
         conditionals: false,
-        join_vars: false
+        join_vars: false,
       },
       mangle: {
         module: true,
@@ -209,8 +216,8 @@ export default {
       output: {
         beautify: true,
         braces: true,
-        indent_level: 2
-      }
+        indent_level: 2,
+      },
     }),
   ],
 

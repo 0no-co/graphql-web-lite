@@ -1,7 +1,5 @@
 export function printBlockString(str) {
-  return '"""\n' +
-    JSON.stringify(str).slice(1, -1)
-      + '\n"""';
+  return '"""\n' + JSON.stringify(str).slice(1, -1) + '\n"""';
 }
 
 export function dedentBlockStringValue(str) {

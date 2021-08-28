@@ -7,18 +7,18 @@ export function visit(node, visitor) {
   const ancestors = [];
 
   function callback(node, key, parent, isLeaving) {
-    const visitFn = getVisitFn(visitor, node.kind, isLeaving)
+    const visitFn = getVisitFn(visitor, node.kind, isLeaving);
     if (visitFn) {
-      const result = visitFn.call(visitor, node, key, parent, path, ancestors)
-      if (result === BREAK) throw BREAK
-      return result
+      const result = visitFn.call(visitor, node, key, parent, path, ancestors);
+      if (result === BREAK) throw BREAK;
+      return result;
     }
   }
 
   function traverse(node, key, parent) {
     let hasEdited = false;
     let result;
-    
+
     result = callback(node, key, parent, false);
     if (result === false) {
       return;
@@ -46,7 +46,6 @@ export function visit(node, visitor) {
             }
           }
         }
-
       } else if (value != null && typeof value.kind === 'string') {
         result = traverse(value, nodeKey, node);
         if (result !== undefined) {

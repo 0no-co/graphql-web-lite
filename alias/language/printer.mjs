@@ -6,7 +6,7 @@ export function print(node) {
   if (Array.isArray(node)) {
     return node.map(print);
   } else if (node == null || typeof node !== 'object') {
-    return node ? ('' + node) : '';
+    return node ? '' + node : '';
   }
 
   switch (node.kind) {
@@ -14,36 +14,43 @@ export function print(node) {
       const prefix = join(
         [
           node.operation,
-          print(node.name) + wrap('(', join(print(node.variableDefinitions), ', '), ')'),
+          print(node.name) +
+            wrap('(', join(print(node.variableDefinitions), ', '), ')'),
           join(print(node.directives), ' '),
         ],
-        ' ',
+        ' '
       );
 
-      return (prefix === 'query' ? '' : prefix + ' ') + print(node.selectionSet);
+      return (
+        (prefix === 'query' ? '' : prefix + ' ') + print(node.selectionSet)
+      );
     }
 
     case 'VariableDefinition':
-      return print(node.variable) +
+      return (
+        print(node.variable) +
         ': ' +
         print(node.type) +
         wrap(' = ', print(node.defaultValue)) +
-        wrap(' ', join(print(node.directives), ' '));
-    
+        wrap(' ', join(print(node.directives), ' '))
+      );
+
     case 'Field':
       return join(
         [
-          wrap('', print(node.alias), ': ')
-            + print(node.name)
-            + wrap('(', join(print(node.arguments), ', '), ')'),
+          wrap('', print(node.alias), ': ') +
+            print(node.name) +
+            wrap('(', join(print(node.arguments), ', '), ')'),
           join(print(node.directives), ' '),
-          print(node.selectionSet)
+          print(node.selectionSet),
         ],
         ' '
       );
 
     case 'StringValue':
-      return node.isBlockString ? printBlockString(node.value) : printString(node.value);
+      return node.isBlockString
+        ? printBlockString(node.value)
+        : printString(node.value);
 
     case 'BooleanValue':
       return node.value ? 'true' : 'false';
@@ -66,14 +73,19 @@ export function print(node) {
     case 'ObjectField':
       return node.name.value + ': ' + print(node.value);
 
-    case 'Variable': return '$' + node.name.value;
+    case 'Variable':
+      return '$' + node.name.value;
     case 'Document':
       return join(print(node.definitions), '\n\n');
-    case 'SelectionSet': return block(print(node.selections));
-    case 'Argument': return node.name.value + ': ' + print(node.value);
+    case 'SelectionSet':
+      return block(print(node.selections));
+    case 'Argument':
+      return node.name.value + ': ' + print(node.value);
 
     case 'FragmentSpread':
-      return '...' + print(node.name) + wrap(' ', join(print(node.directives), ' '));
+      return (
+        '...' + print(node.name) + wrap(' ', join(print(node.directives), ' '))
+      );
 
     case 'InlineFragment':
       return join(
@@ -83,18 +95,26 @@ export function print(node) {
           join(print(node.directives), ' '),
           print(node.selectionSet),
         ],
-        ' ',
+        ' '
       );
 
     case 'FragmentDefinition':
-      return 'fragment ' + node.name.value +
-        wrap('(', join(print(node.variableDefinitions), ', '), ')') + ' ' +
-        'on ' + print(node.typeCondition) + ' ' +
+      return (
+        'fragment ' +
+        node.name.value +
+        wrap('(', join(print(node.variableDefinitions), ', '), ')') +
+        ' ' +
+        'on ' +
+        print(node.typeCondition) +
+        ' ' +
         wrap('', join(print(node.directives), ' '), ' ') +
-        print(node.selectionSet);
+        print(node.selectionSet)
+      );
 
     case 'Directive':
-      return '@' + node.name.value + wrap('(', join(print(node.args), ', '), ')');
+      return (
+        '@' + node.name.value + wrap('(', join(print(node.args), ', '), ')')
+      );
 
     case 'NamedType':
       return node.name.value;
@@ -105,18 +125,15 @@ export function print(node) {
     case 'NonNullType':
       return print(node.type) + '!';
 
-    default: return '';
+    default:
+      return '';
   }
 }
 
 const join = (array, separator) =>
-  (array && array
-    .filter(x => x)
-    .join(separator || '')) || '';
+  (array && array.filter((x) => x).join(separator || '')) || '';
 
-const block = array =>
+const block = (array) =>
   wrap('{\n  ', join(array, '\n').replace(/\n/g, '\n  '), '\n}');
 
-const wrap = (start, value, end) => value
-  ? start + value + (end || '')
-  : '';
+const wrap = (start, value, end) => (value ? start + value + (end || '') : '');

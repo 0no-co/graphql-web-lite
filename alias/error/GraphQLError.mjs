@@ -1,5 +1,8 @@
 import { getLocation } from 'graphql/language/location';
-import { printLocation, printSourceLocation } from 'graphql/language/printLocation';
+import {
+  printLocation,
+  printSourceLocation,
+} from 'graphql/language/printLocation';
 
 export class GraphQLError extends Error {
   constructor(
@@ -9,7 +12,7 @@ export class GraphQLError extends Error {
     positions,
     path,
     originalError,
-    extensions,
+    extensions
   ) {
     super(message);
 

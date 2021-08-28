@@ -12,7 +12,7 @@ const plugin = ({ types: t }) => {
           path.replaceWith(path.node.arguments[0]);
         }
       },
-    }
+    },
   };
 };
 

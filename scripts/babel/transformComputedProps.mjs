@@ -14,7 +14,7 @@ const plugin = ({ types: t }) => {
           path.remove();
         }
       },
-    }
+    },
   };
 };
 

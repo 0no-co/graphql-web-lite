@@ -13,48 +13,48 @@ const ignored = match()`
 `;
 
 // 2.1.9: Limited to ASCII character set, so regex shortcodes are fine
-const name = match(Kind.NAME, x => ({
+const name = match(Kind.NAME, (x) => ({
   kind: x.tag,
-  value: x[0]
+  value: x[0],
 }))`
   ${/[_\w][_\d\w]*/}
 `;
 
-const null_ = match(Kind.NULL, x => ({
+const null_ = match(Kind.NULL, (x) => ({
   kind: x.tag,
   value: null,
 }))`
   ${'null'}
 `;
 
-const bool = match(Kind.BOOLEAN, x => ({
+const bool = match(Kind.BOOLEAN, (x) => ({
   kind: x.tag,
-  value: x[0] === 'true'
+  value: x[0] === 'true',
 }))`
   ${'true'} | ${'false'}
 `;
 
-const variable = match(Kind.VARIABLE, x => ({
+const variable = match(Kind.VARIABLE, (x) => ({
   kind: x.tag,
-  name: x[0]
+  name: x[0],
 }))`
   :${'$'} ${name}
 `;
 
 // 2.9.6: Technically, this parser doesn't need to check that true, false, and null
 // aren't used as enums, but this prevents mistakes and follows the spec closely
-const enum_ = match(Kind.ENUM, x => ({
+const enum_ = match(Kind.ENUM, (x) => ({
   kind: x.tag,
-  value: x[0].value
+  value: x[0].value,
 }))`
   ${name}
 `;
 
 // 2.9.1-2: These combine both number values for the sake of simplicity.
 // It allows for leading zeroes, unlike graphql.js, which shouldn't matter;
-const number = match(null, x => ({
+const number = match(null, (x) => ({
   kind: x.length === 1 ? Kind.INT : Kind.FLOAT,
-  value: x.join('')
+  value: x.join(''),
 }))`
   ${/[-]?\d+/}
   ${/[.]\d+/}?
@@ -63,27 +63,27 @@ const number = match(null, x => ({
 
 // 2.9.4: Notably, this skips checks for unicode escape sequences and escaped
 // quotes. This is mainly meant for client-side use, so we won't have to be strict.
-const string = match(Kind.STRING, x => ({
+const string = match(Kind.STRING, (x) => ({
   kind: x.tag,
-  value: x[0]
+  value: x[0],
 }))`
   (:${'"""'} ${/.*(?=""")/} :${'"""'})
   | (:${'"'} ${/[^"\r\n]*/} :${'"'})
 `;
 
-const list = match(Kind.LIST, x => ({
+const list = match(Kind.LIST, (x) => ({
   kind: x.tag,
-  values: x
+  values: x,
 }))`
   (?: ${'['} ${ignored}?)
   ${value}*
   (?: ${']'} ${ignored}?)
 `;
 
-const objectField = match(Kind.OBJECT_FIELD, x => ({
+const objectField = match(Kind.OBJECT_FIELD, (x) => ({
   kind: x.tag,
   name: x[0],
-  value: x[1]
+  value: x[1],
 }))`
   ${name}
   (?: ${ignored} ${/:/} ${ignored})?
@@ -91,7 +91,7 @@ const objectField = match(Kind.OBJECT_FIELD, x => ({
   (?: ${ignored})?
 `;
 
-const object = match(Kind.OBJECT, x => ({
+const object = match(Kind.OBJECT, (x) => ({
   kind: x.tag,
   fields: x,
 }))`
@@ -101,7 +101,7 @@ const object = match(Kind.OBJECT, x => ({
 `;
 
 // 2.9: This matches the spec closely and is complete
-const value = match(null, x => x[0])`
+const value = match(null, (x) => x[0])`
   :${ignored}?
   (
     ${null_}
@@ -116,10 +116,10 @@ const value = match(null, x => x[0])`
   :${ignored}?
 `;
 
-const arg = match(Kind.ARGUMENT, x => ({
+const arg = match(Kind.ARGUMENT, (x) => ({
   kind: x.tag,
   name: x[0],
-  value: x[1]
+  value: x[1],
 }))`
   ${name}
   (?: ${ignored}? ${':'} ${ignored}?)
@@ -135,10 +135,10 @@ const args = match()`
   )?
 `;
 
-const directive = match(Kind.DIRECTIVE, x => ({
+const directive = match(Kind.DIRECTIVE, (x) => ({
   kind: x.tag,
   name: x[0],
-  arguments: x[1]
+  arguments: x[1],
 }))`
   :${'@'} ${name} :${ignored}?
   ${args}?
@@ -150,7 +150,7 @@ const directives = match()`
   ${directive}*
 `;
 
-const field = match(Kind.FIELD, x => {
+const field = match(Kind.FIELD, (x) => {
   let i = 0;
   return {
     kind: x.tag,
@@ -174,13 +174,12 @@ const field = match(Kind.FIELD, x => {
 
 // 2.11: The type declarations may be simplified since there's little room
 // for error in this limited type system.
-const type = match(null, x => {
-  const node = x[0].kind === 'Name'
-    ? { kind: Kind.NAMED_TYPE, name: x[0] }
-    : { kind: Kind.LIST_TYPE, type: x[0] }
-  return x[1] === '!'
-    ? { kind: Kind.NON_NULL_TYPE, type: node }
-    : node;
+const type = match(null, (x) => {
+  const node =
+    x[0].kind === 'Name'
+      ? { kind: Kind.NAMED_TYPE, name: x[0] }
+      : { kind: Kind.LIST_TYPE, type: x[0] };
+  return x[1] === '!' ? { kind: Kind.NON_NULL_TYPE, type: node } : node;
 })`
   (
     (
@@ -193,22 +192,22 @@ const type = match(null, x => {
   :${ignored}?
 `;
 
-const typeCondition = match(null, x => ({
+const typeCondition = match(null, (x) => ({
   kind: Kind.NAMED_TYPE,
-  name: x[0]
+  name: x[0],
 }))`
   (?: ${ignored} ${'on'} ${ignored})
   ${name}
   :${ignored}?
 `;
 
-const inlineFragment = match(Kind.INLINE_FRAGMENT, x => {
+const inlineFragment = match(Kind.INLINE_FRAGMENT, (x) => {
   let i = 0;
   return {
     kind: x.tag,
     typeCondition: x[i].kind === Kind.NAMED_TYPE ? x[i++] : undefined,
     directives: x[i++],
-    selectionSet: x[i]
+    selectionSet: x[i],
   };
 })`
   (?: ${'...'} ${ignored}?)
@@ -217,10 +216,10 @@ const inlineFragment = match(Kind.INLINE_FRAGMENT, x => {
   ${selectionSet}
 `;
 
-const fragmentSpread = match(Kind.FRAGMENT_SPREAD, x => ({
+const fragmentSpread = match(Kind.FRAGMENT_SPREAD, (x) => ({
   kind: x.tag,
   name: x[0],
-  directives: x[1]
+  directives: x[1],
 }))`
   (?: ${'...'} ${ignored}?)
   !${'on'}
@@ -229,7 +228,7 @@ const fragmentSpread = match(Kind.FRAGMENT_SPREAD, x => ({
   ${directives}
 `;
 
-const selectionSet = match(Kind.SELECTION_SET, x => ({
+const selectionSet = match(Kind.SELECTION_SET, (x) => ({
   kind: x.tag,
   selections: x.slice(),
 }))`
@@ -242,12 +241,12 @@ const selectionSet = match(Kind.SELECTION_SET, x => ({
   (?: ${'}'} ${ignored}?)
 `;
 
-const varDefinitionDefault = match(null, x => x[0])`
+const varDefinitionDefault = match(null, (x) => x[0])`
  (?: ${'='} ${ignored}?)
  ${value}
 `;
 
-const varDefinition = match(Kind.VARIABLE_DEFINITION, x => ({
+const varDefinition = match(Kind.VARIABLE_DEFINITION, (x) => ({
   kind: x.tag,
   variable: x[0],
   type: x[1],
@@ -268,7 +267,7 @@ const varDefinitions = match('vars')`
   (?: ${')'} ${ignored}?)
 `;
 
-const fragmentDefinition = match(Kind.FRAGMENT_DEFINITION, x => ({
+const fragmentDefinition = match(Kind.FRAGMENT_DEFINITION, (x) => ({
   kind: x.tag,
   name: x[0],
   typeCondition: x[1],
@@ -282,7 +281,7 @@ const fragmentDefinition = match(Kind.FRAGMENT_DEFINITION, x => ({
   ${selectionSet}
 `;
 
-const operationDefinition = match(Kind.OPERATION_DEFINITION, x => {
+const operationDefinition = match(Kind.OPERATION_DEFINITION, (x) => {
   let i = 1;
   return {
     kind: x.tag,
@@ -302,23 +301,21 @@ const operationDefinition = match(Kind.OPERATION_DEFINITION, x => {
   ${selectionSet}
 `;
 
-const queryShorthand = match(Kind.OPERATION_DEFINITION, x => ({
+const queryShorthand = match(Kind.OPERATION_DEFINITION, (x) => ({
   kind: x.tag,
   operation: 'query',
   name: undefined,
   variableDefinitions: [],
   directives: [],
-  selectionSet: x[0]
+  selectionSet: x[0],
 }))`
   :${ignored}?
   ${selectionSet}
 `;
 
-const root = match(Kind.DOCUMENT, x => (
-  x.length
-    ? { kind: x.tag, definitions: x.slice() }
-    : undefined
-))`
+const root = match(Kind.DOCUMENT, (x) =>
+  x.length ? { kind: x.tag, definitions: x.slice() } : undefined
+)`
   ${queryShorthand}
   | (${operationDefinition} | ${fragmentDefinition})+
 `;
