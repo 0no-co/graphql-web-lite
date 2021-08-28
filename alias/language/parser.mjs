@@ -4,7 +4,7 @@
  * in graphql.js it will only parse the query language, but not the schema
  * language.
  */
-import { Kind } from 'graphql';
+import { Kind, GraphQLError } from 'graphql';
 import { match, parse as makeParser } from 'reghex';
 
 // 2.1.7: Includes commas, and line comments
@@ -36,7 +36,7 @@ const bool = match(Kind.BOOLEAN, x => ({
 
 const variable = match(Kind.VARIABLE, x => ({
   kind: x.tag,
-  value: x[0]
+  name: x[0]
 }))`
   :${'$'} ${name}
 `;
@@ -127,6 +127,7 @@ const arg = match(Kind.ARGUMENT, x => ({
 `;
 
 const args = match('_argumentset')`
+  :${ignored}?
   (
     (?: ${'('} ${ignored}?)
     ${arg}+
@@ -153,17 +154,19 @@ const field = match(Kind.FIELD, x => {
   let i = 0;
   return {
     kind: x.tag,
-    alias: x[1].kind === 'Name' ? x[i++] : undefined,
+    alias: x[1].kind === Kind.NAME ? x[i++] : undefined,
     name: x[i++],
     arguments: x[i++],
     directives: x[i++],
     selectionSet: x[i++],
   };
 })`
+  :${ignored}?
   ${name}
-  :${ignored}?
-  ((?: ${':'} ${ignored}?) ${name})?
-  :${ignored}?
+  (
+    (?: ${ignored}? ${':'} ${ignored}?)
+    ${name}
+  )?
   ${args}
   ${directives}
   ${selectionSet}?
@@ -194,7 +197,7 @@ const typeCondition = match('_typecondition', x => ({
   kind: Kind.NAMED_TYPE,
   name: x[0]
 }))`
-  (?: ${'on'} ${ignored})
+  (?: ${ignored} ${'on'} ${ignored})
   ${name}
   :${ignored}?
 `;
@@ -272,10 +275,8 @@ const fragmentDefinition = match(Kind.FRAGMENT_DEFINITION, x => ({
   directives: x[2],
   selectionSet: x[3],
 }))`
-  (?: ${'fragment'} ${ignored})
-  !${'on'}
+  (?: ${ignored}? ${'fragment'} ${ignored})
   ${name}
-  :${ignored}
   ${typeCondition}
   ${directives}
   ${selectionSet}
@@ -322,6 +323,24 @@ const root = match(Kind.DOCUMENT, x => (
   | (${operationDefinition} | ${fragmentDefinition})+
 `;
 
-export const parse = makeParser(root);
-export const parseValue = makeParser(value);
-export const parseType = makeParser(type);
+const _parse = makeParser(root);
+const _parseValue = makeParser(value);
+const _parseType = makeParser(type);
+
+export function parse(input) {
+  const result = _parse(input);
+  if (result == null) throw new GraphQLError('Syntax Error');
+  return result;
+}
+
+export function parseValue(input) {
+  const result = _parseValue(input);
+  if (result == null) throw new GraphQLError('Syntax Error');
+  return result;
+}
+
+export function parseType(input) {
+  const result = _parseType(input);
+  if (result == null) throw new GraphQLError('Syntax Error');
+  return result;
+}
