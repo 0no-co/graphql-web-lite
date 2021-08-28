@@ -16,33 +16,32 @@ export function visit(node, visitor) {
   }
 
   function traverse(node, key, parent) {
+    let hasEdited = false;
     let result;
     
     result = callback(node, key, parent, false);
     if (result === false) {
       return;
     } else if (result && typeof result.kind === 'string') {
+      hasEdited = true;
       node = result;
     }
 
     ancestors.push(node);
-    const copy = {};
+    const copy = { ...node };
 
-    let hasEdited = false;
     for (const nodeKey in node) {
-      const value = node[nodeKey];
-
-      let newValue;
+      let value = node[nodeKey];
       path.push(nodeKey);
       if (Array.isArray(value)) {
-        newValue = value.slice();
+        value = value.slice();
         for (let index = 0; index < value.length; index++) {
           if (value[index] != null && typeof value[index].kind === 'string') {
             path.push(index);
             result = traverse(value[index], index, node);
             path.pop();
             if (result !== undefined) {
-              newValue[index] = result;
+              value[index] = result;
               hasEdited = true;
             }
           }
@@ -51,19 +50,20 @@ export function visit(node, visitor) {
       } else if (value != null && typeof value.kind === 'string') {
         result = traverse(value, nodeKey, node);
         if (result !== undefined) {
-          newValue = result;
+          value = result;
           hasEdited = true;
         }
       }
 
       path.pop();
-      copy[nodeKey] = hasEdited ? newValue : value;
+      if (hasEdited) copy[nodeKey] = value;
     }
 
     ancestors.pop();
 
     if (hasEdited) node = copy;
-    return callback(node, key, parent, true);
+    result = callback(node, key, parent, true);
+    return hasEdited && result === undefined ? node : result;
   }
 
   try {
