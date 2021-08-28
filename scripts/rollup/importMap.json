@@ -639,10 +639,6 @@
     "local": "printSourceLocation",
     "from": "graphql/language/printLocation"
   },
-  "printType": {
-    "local": "printType",
-    "from": "graphql/utilities/printSchema"
-  },
   "responsePathAsArray": {
     "local": "pathToArray",
     "from": "graphql/jsutils/Path"
