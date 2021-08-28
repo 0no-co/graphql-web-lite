@@ -2300,10 +2300,10 @@ regexpu-core@4.5.4:
     unicode-match-property-ecmascript "^1.0.4"
     unicode-match-property-value-ecmascript "^1.1.0"
 
-reghex@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/reghex/-/reghex-3.0.1.tgz#76dd93c0ebef17dfbff0ea6705e9ee764eb36717"
-  integrity sha512-4EVlR7D9BMSUcCVtU2LO6iRzcxwgwlQgHa2MBMlHu39SGswa2FueAqVV+LtUNmpm1+eySVeH+04vI4Zaqg9Q2A==
+reghex@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/reghex/-/reghex-3.0.2.tgz#984045126642ee0709c3e10727e7041112281330"
+  integrity sha512-Zb9DJ5u6GhgqRSBnxV2QSnLqEwcKxHWFA1N2yUa4ZUAO1P8jlWKYtWZ6/ooV6yylspGXJX0O/uNzEv0xrCtwaA==
 
 regjsgen@^0.5.0:
   version "0.5.2"

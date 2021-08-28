@@ -8,7 +8,7 @@ import { Kind, GraphQLError } from 'graphql';
 import { match, parse as makeParser } from 'reghex';
 
 // 2.1.7: Includes commas, and line comments
-const ignored = match('_ignored')`
+const ignored = match()`
   ${/([\s,]|#[^\n\r]+)+/}
 `;
 
@@ -52,7 +52,7 @@ const enum_ = match(Kind.ENUM, x => ({
 
 // 2.9.1-2: These combine both number values for the sake of simplicity.
 // It allows for leading zeroes, unlike graphql.js, which shouldn't matter;
-const number = match('_number', x => ({
+const number = match(null, x => ({
   kind: x.length === 1 ? Kind.INT : Kind.FLOAT,
   value: x.join('')
 }))`
@@ -101,7 +101,7 @@ const object = match(Kind.OBJECT, x => ({
 `;
 
 // 2.9: This matches the spec closely and is complete
-const value = match('_value', x => x[0])`
+const value = match(null, x => x[0])`
   :${ignored}?
   (
     ${null_}
@@ -126,7 +126,7 @@ const arg = match(Kind.ARGUMENT, x => ({
   ${value}
 `;
 
-const args = match('_argumentset')`
+const args = match()`
   :${ignored}?
   (
     (?: ${'('} ${ignored}?)
@@ -145,7 +145,7 @@ const directive = match(Kind.DIRECTIVE, x => ({
   :${ignored}?
 `;
 
-const directives = match('_directiveset')`
+const directives = match()`
   :${ignored}?
   ${directive}*
 `;
@@ -174,7 +174,7 @@ const field = match(Kind.FIELD, x => {
 
 // 2.11: The type declarations may be simplified since there's little room
 // for error in this limited type system.
-const type = match('_type', x => {
+const type = match(null, x => {
   const node = x[0].kind === 'Name'
     ? { kind: Kind.NAMED_TYPE, name: x[0] }
     : { kind: Kind.LIST_TYPE, type: x[0] }
@@ -193,7 +193,7 @@ const type = match('_type', x => {
   :${ignored}?
 `;
 
-const typeCondition = match('_typecondition', x => ({
+const typeCondition = match(null, x => ({
   kind: Kind.NAMED_TYPE,
   name: x[0]
 }))`
@@ -206,7 +206,7 @@ const inlineFragment = match(Kind.INLINE_FRAGMENT, x => {
   let i = 0;
   return {
     kind: x.tag,
-    typeCondition: x[i].tag === '_typecondition' ? x[i++] : undefined,
+    typeCondition: x[i].kind === Kind.NAMED_TYPE ? x[i++] : undefined,
     directives: x[i++],
     selectionSet: x[i]
   };
@@ -231,7 +231,7 @@ const fragmentSpread = match(Kind.FRAGMENT_SPREAD, x => ({
 
 const selectionSet = match(Kind.SELECTION_SET, x => ({
   kind: x.tag,
-  selections:x,
+  selections: x.slice(),
 }))`
   (?: ${'{'} ${ignored}?)
   (
@@ -242,7 +242,7 @@ const selectionSet = match(Kind.SELECTION_SET, x => ({
   (?: ${'}'} ${ignored}?)
 `;
 
-const varDefinitionDefault = match('_defaultvariable', x => x[0])`
+const varDefinitionDefault = match(null, x => x[0])`
  (?: ${'='} ${ignored}?)
  ${value}
 `;
@@ -251,8 +251,8 @@ const varDefinition = match(Kind.VARIABLE_DEFINITION, x => ({
   kind: x.tag,
   variable: x[0],
   type: x[1],
-  defaultValue: !x[2].tag ? x[2] : undefined,
-  directives: x[2].tag ? x[2] : x[3],
+  defaultValue: x[2].kind ? x[2] : undefined,
+  directives: !x[2].kind ? x[2] : x[3],
 }))`
   ${variable}
   (?: ${ignored}? ${':'} ${ignored}?)
@@ -262,7 +262,7 @@ const varDefinition = match(Kind.VARIABLE_DEFINITION, x => ({
   :${ignored}?
 `;
 
-const varDefinitions = match('_variabledefinitionset')`
+const varDefinitions = match('vars')`
   (?: ${'('} ${ignored}?)
   ${varDefinition}+
   (?: ${')'} ${ignored}?)
@@ -288,7 +288,7 @@ const operationDefinition = match(Kind.OPERATION_DEFINITION, x => {
     kind: x.tag,
     operation: x[0],
     name: x.length === 5 ? x[i++] : undefined,
-    variableDefinitions: x[i].tag === '_variabledefinitionset' ? x[i++] : null,
+    variableDefinitions: x[i].tag === 'vars' ? x[i++].slice() : null,
     directives: x[i++],
     selectionSet: x[i],
   };
@@ -316,7 +316,7 @@ const queryShorthand = match(Kind.OPERATION_DEFINITION, x => ({
 
 const root = match(Kind.DOCUMENT, x => (
   x.length
-    ? { kind: x.tag, definitions: x }
+    ? { kind: x.tag, definitions: x.slice() }
     : undefined
 ))`
   ${queryShorthand}
