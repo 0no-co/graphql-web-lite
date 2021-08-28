@@ -2,9 +2,13 @@
   "name": "graphql-web-lite",
   "version": "15.5.1-lite.0",
   "license": "MIT",
+  "workspaces": [
+    "dist",
+    "scripts/buildenv"
+  ],
   "scripts": {
     "build": "rollup -c scripts/rollup/config.js",
-    "size-check": "cd demo && yarn && yarn build"
+    "size-check": "yarn workspace @graphql-web-lite/buildenv build"
   },
   "keywords": [
     "regex",

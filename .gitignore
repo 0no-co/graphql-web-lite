@@ -1,9 +1,8 @@
 yarn-error.log
-dist/
 node_modules/
 coverage/
+dist/
+!dist/.gitkeep
 /cypress/videos/**
 /cypress/screenshots/**
-demo/yarn.lock
-demo/dist-graphql
-demo/dist-lite
+/scripts/buildenv/dist-*
