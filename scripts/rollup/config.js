@@ -11,7 +11,7 @@ import babelTransformComputedProps from '../babel/transformComputedProps.mjs';
 import babelTransformDevAssert from '../babel/transformDevAssert.mjs';
 import babelTransformObjectFreeze from '../babel/transformObjectFreeze.mjs';
 
-import packageMetadata from './packageMetadata';
+import { packageMetadata, version } from './packageMetadata';
 
 const cwd = process.cwd();
 const graphqlModule = path.join(cwd, 'node_modules/graphql/');
@@ -80,8 +80,8 @@ export default {
     {
       async load(id) {
         if (!id.startsWith(virtualModule)) return null;
-
         const entry = path.relative(virtualModule, id).replace(/\.m?js$/, '');
+        if (entry === 'version') return version;
         return exports[entry] || null;
       },
 

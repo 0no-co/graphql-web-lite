@@ -1,7 +1,23 @@
+import { parse } from 'semver';
+
 const rootPkg = require('../../package.json');
 const gqlPkg = require('graphql/package.json');
+const parsedVersion = parse(rootPkg.version);
 
-export default JSON.stringify(
+const versionInfo = {
+  major: parsedVersion.major,
+  minor: parsedVersion.minor,
+  patch: parsedVersion.patch,
+  preReleaseTag: 'lite.' + parsedVersion.prerelease.join('.'),
+  lite: true,
+};
+
+export const version = `
+export const version = ${JSON.stringify(rootPkg.version)};
+export const versionInfo = ${JSON.stringify(versionInfo)};
+`.trim();
+
+export const packageMetadata = JSON.stringify(
   {
     ...gqlPkg,
     name: 'graphql-web-lite',
