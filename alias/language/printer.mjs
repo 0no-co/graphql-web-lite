@@ -76,7 +76,7 @@ export function print(node) {
     case 'Variable':
       return '$' + node.name.value;
     case 'Document':
-      return join(print(node.definitions), '\n\n');
+      return join(print(node.definitions), '\n\n') + '\n';
     case 'SelectionSet':
       return block(print(node.selections));
     case 'Argument':
@@ -113,7 +113,9 @@ export function print(node) {
 
     case 'Directive':
       return (
-        '@' + node.name.value + wrap('(', join(print(node.args), ', '), ')')
+        '@' +
+        node.name.value +
+        wrap('(', join(print(node.arguments), ', '), ')')
       );
 
     case 'NamedType':
