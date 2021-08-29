@@ -8,9 +8,7 @@ import { Kind, GraphQLError } from 'graphql';
 import { match, parse as makeParser } from 'reghex';
 
 // 2.1.7: Includes commas, and line comments
-const ignored = match()`
-  ${/([\s,]|#[^\n\r]+)+/}
-`;
+const ignored = /([\s,]|#[^\n\r]+)+/;
 
 // 2.1.9: Limited to ASCII character set, so regex shortcodes are fine
 const name = match(Kind.NAME, (x) => ({
@@ -31,7 +29,7 @@ const bool = match(Kind.BOOLEAN, (x) => ({
   kind: x.tag,
   value: x[0] === 'true',
 }))`
-  ${'true'} | ${'false'}
+  ${/true|false/}
 `;
 
 const variable = match(Kind.VARIABLE, (x) => ({
@@ -73,11 +71,11 @@ const string = match(Kind.STRING, (x) => ({
 
 const list = match(Kind.LIST, (x) => ({
   kind: x.tag,
-  values: x,
+  values: x.slice(),
 }))`
-  (?: ${'['} ${ignored}?)
+  :${'['}
   ${value}*
-  (?: ${']'} ${ignored}?)
+  (?: ${ignored}? ${']'} ${ignored}?)
 `;
 
 const objectField = match(Kind.OBJECT_FIELD, (x) => ({
@@ -85,17 +83,17 @@ const objectField = match(Kind.OBJECT_FIELD, (x) => ({
   name: x[0],
   value: x[1],
 }))`
+  :${ignored}?
   ${name}
-  (?: ${ignored} ${/:/} ${ignored})?
+  (?: ${ignored}? ${':'})
   ${value}
-  (?: ${ignored})?
 `;
 
 const object = match(Kind.OBJECT, (x) => ({
   kind: x.tag,
-  fields: x,
+  fields: x.slice(),
 }))`
-  (?: ${'{'} ${ignored}?)
+  :${'{'}
   ${objectField}*
   (?: ${'}'} ${ignored}?)
 `;
@@ -196,7 +194,7 @@ const typeCondition = match(null, (x) => ({
   kind: Kind.NAMED_TYPE,
   name: x[0],
 }))`
-  (?: ${ignored} ${'on'} ${ignored})
+  (?: ${ignored}? ${'on'} ${ignored})
   ${name}
   :${ignored}?
 `;
@@ -210,7 +208,7 @@ const inlineFragment = match(Kind.INLINE_FRAGMENT, (x) => {
     selectionSet: x[i],
   };
 })`
-  (?: ${'...'} ${ignored}?)
+  :${'...'}
   ${typeCondition}?
   ${directives}
   ${selectionSet}
@@ -232,6 +230,7 @@ const selectionSet = match(Kind.SELECTION_SET, (x) => ({
   kind: x.tag,
   selections: x.slice(),
 }))`
+  :${ignored}?
   (?: ${'{'} ${ignored}?)
   (
     ${inlineFragment} |
@@ -262,6 +261,7 @@ const varDefinition = match(Kind.VARIABLE_DEFINITION, (x) => ({
 `;
 
 const varDefinitions = match('vars')`
+  :${ignored}?
   (?: ${'('} ${ignored}?)
   ${varDefinition}+
   (?: ${')'} ${ignored}?)
@@ -286,16 +286,15 @@ const operationDefinition = match(Kind.OPERATION_DEFINITION, (x) => {
   return {
     kind: x.tag,
     operation: x[0],
-    name: x.length === 5 ? x[i++] : undefined,
-    variableDefinitions: x[i].tag === 'vars' ? x[i++].slice() : null,
+    name: x[i].kind === Kind.NAME ? x[i++] : undefined,
+    variableDefinitions: x[i].tag === 'vars' ? x[i++].slice() : [],
     directives: x[i++],
     selectionSet: x[i],
   };
 })`
   :${ignored}?
   ${/query|mutation|subscription/}
-  ((?: ${ignored}) ${name})?
-  :${ignored}?
+  (:${ignored} ${name})?
   ${varDefinitions}?
   ${directives}
   ${selectionSet}
@@ -309,7 +308,6 @@ const queryShorthand = match(Kind.OPERATION_DEFINITION, (x) => ({
   directives: [],
   selectionSet: x[0],
 }))`
-  :${ignored}?
   ${selectionSet}
 `;
 
