@@ -627,10 +627,6 @@
     "local": "printError",
     "from": "graphql/error/GraphQLError"
   },
-  "printIntrospectionSchema": {
-    "local": "printIntrospectionSchema",
-    "from": "graphql/utilities/printSchema"
-  },
   "printLocation": {
     "local": "printLocation",
     "from": "graphql/language/printLocation"
