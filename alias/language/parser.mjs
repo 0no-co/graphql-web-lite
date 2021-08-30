@@ -20,7 +20,6 @@ const name = match(Kind.NAME, (x) => ({
 
 const null_ = match(Kind.NULL, (x) => ({
   kind: x.tag,
-  value: null,
 }))`
   ${'null'}
 `;
@@ -74,7 +73,7 @@ const list = match(Kind.LIST, (x) => ({
   values: x.slice(),
 }))`
   :${'['}
-  ${value}*
+  ${() => value}*
   (?: ${ignored}? ${']'} ${ignored}?)
 `;
 
@@ -86,7 +85,7 @@ const objectField = match(Kind.OBJECT_FIELD, (x) => ({
   :${ignored}?
   ${name}
   (?: ${ignored}? ${':'})
-  ${value}
+  ${() => value}
 `;
 
 const object = match(Kind.OBJECT, (x) => ({
@@ -167,7 +166,7 @@ const field = match(Kind.FIELD, (x) => {
   )?
   ${args}
   ${directives}
-  ${selectionSet}?
+  ${() => selectionSet}?
 `;
 
 // 2.11: The type declarations may be simplified since there's little room
@@ -182,7 +181,7 @@ const type = match(null, (x) => {
   (
     (
       (?: ${'['} ${ignored}?)
-      ${type}
+      ${() => type}
       (?: ${ignored}? ${']'} ${ignored}?)
     ) | ${name}
   )
@@ -211,7 +210,7 @@ const inlineFragment = match(Kind.INLINE_FRAGMENT, (x) => {
   :${'...'}
   ${typeCondition}?
   ${directives}
-  ${selectionSet}
+  ${() => selectionSet}
 `;
 
 const fragmentSpread = match(Kind.FRAGMENT_SPREAD, (x) => ({

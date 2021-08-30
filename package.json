@@ -13,11 +13,9 @@
     "prepublishOnly": "run-s test build"
   },
   "keywords": [
-    "regex",
-    "sticky regex",
-    "parser",
-    "parser generator",
-    "babel"
+    "graphql",
+    "graphql-js",
+    "lite"
   ],
   "private": true,
   "homepage": "https://github.com/kitten/graphql-web-lite",
