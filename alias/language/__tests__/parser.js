@@ -47,7 +47,12 @@ describe('Parser', () => {
   });
 
   it('parses kitchen sink', () => {
-    expect(() => parse(kitchenSinkQuery)).not.toThrow();
+    let query;
+    expect(() => {
+      return (query = parse(kitchenSinkQuery));
+    }).not.toThrow();
+
+    expect(query.definitions.length).toBe(6);
   });
 
   it('parses anonymous mutation operations', () => {
@@ -373,7 +378,7 @@ describe('Parser', () => {
   });
 });
 
-const kitchenSinkQuery: string = String.raw`
+const kitchenSinkQuery = String.raw`
 query queryName($foo: ComplexType, $site: Site = MOBILE) @onQuery {
   whoever123is: node(id: [123, 456]) {
     id
@@ -420,12 +425,7 @@ fragment frag on Friend @onFragmentDefinition {
   foo(
     size: $size
     bar: $b
-    obj: {
-      key: "value"
-      block: """
-      block string uses \"""
-      """
-    }
+    obj: { key: "value" }
   )
 }
 {

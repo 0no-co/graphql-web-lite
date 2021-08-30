@@ -58,8 +58,7 @@ const number = match(null, (x) => ({
   ${/[eE][+-]?\d+/}?
 `;
 
-// 2.9.4: Notably, this skips checks for unicode escape sequences and escaped
-// quotes. This is mainly meant for client-side use, so we won't have to be strict.
+// 2.9.4: Notably, this skips checks for unicode escape sequences and escaped quotes.
 const string = match(Kind.STRING, (x) => ({
   kind: x.tag,
   value: x[0],
@@ -313,8 +312,7 @@ const queryShorthand = match(Kind.OPERATION_DEFINITION, (x) => ({
 const root = match(Kind.DOCUMENT, (x) =>
   x.length ? { kind: x.tag, definitions: x.slice() } : undefined
 )`
-  ${queryShorthand}
-  | (${operationDefinition} | ${fragmentDefinition})+
+  (${queryShorthand} | ${operationDefinition} | ${fragmentDefinition})*
 `;
 
 const _parse = makeParser(root);
