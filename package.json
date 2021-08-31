@@ -1,5 +1,6 @@
 {
   "name": "graphql-web-lite",
+  "description": "graphql npm package slimmed down for client-side libraries",
   "version": "15.5.1000",
   "license": "MIT",
   "private": true,
@@ -18,14 +19,13 @@
     "graphql-js",
     "lite"
   ],
-  "private": true,
   "homepage": "https://github.com/kitten/graphql-web-lite",
   "bugs": {
     "url": "https://github.com/kitten/graphql-web-lite/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/kitte/graphql-web-lite.git"
+    "url": "https://github.com/kitten/graphql-web-lite.git"
   },
   "devDependencies": {
     "@babel/core": "^7.15.0",
