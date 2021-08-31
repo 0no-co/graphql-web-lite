@@ -3,6 +3,7 @@ import { promises as fs } from 'fs';
 
 import resolve from '@rollup/plugin-node-resolve';
 import buble from '@rollup/plugin-buble';
+import replace from '@rollup/plugin-replace';
 import { babel } from '@rollup/plugin-babel';
 import { terser } from 'rollup-plugin-terser';
 
@@ -191,6 +192,13 @@ export default {
         asyncAwait: false,
       },
       objectAssign: 'Object.assign',
+    }),
+
+    replace({
+      preventAssignment: true,
+      values: {
+        'process.env.NODE_ENV': JSON.stringify('production'),
+      },
     }),
 
     terser({
