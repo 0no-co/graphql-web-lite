@@ -1,8 +1,6 @@
 import { getLocation } from 'graphql/language/location';
-import {
-  printLocation,
-  printSourceLocation,
-} from 'graphql/language/printLocation';
+
+import { printLocation, printSourceLocation } from '../language/printLocation';
 
 export class GraphQLError extends Error {
   constructor(

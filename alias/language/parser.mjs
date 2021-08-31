@@ -4,7 +4,8 @@
  * in graphql.js it will only parse the query language, but not the schema
  * language.
  */
-import { Kind, GraphQLError } from 'graphql';
+import { Kind } from 'graphql';
+import { GraphQLError } from '../error/GraphQLError';
 import { match, parse as makeParser } from 'reghex';
 
 // 2.1.7: Includes commas, and line comments
