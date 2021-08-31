@@ -14,9 +14,9 @@ import babelTransformObjectFreeze from '../babel/transformObjectFreeze.mjs';
 import { packageMetadata, version } from './packageMetadata';
 
 const cwd = process.cwd();
-const graphqlModule = path.join(cwd, 'node_modules/graphql/');
-const virtualModule = path.join(cwd, 'virtual/');
-const aliasModule = path.join(cwd, 'alias/');
+const graphqlModule = path.posix.join(cwd, 'node_modules/graphql/');
+const virtualModule = path.posix.join(cwd, 'virtual/');
+const aliasModule = path.posix.join(cwd, 'alias/');
 
 const EXTERNAL = 'graphql';
 const externalModules = ['dns', 'fs', 'path', 'url'];
@@ -65,7 +65,7 @@ const manualChunks = (id, utils) => {
 
 export default {
   input: Object.keys(exports).reduce((input, key) => {
-    input[key] = path.join('./virtual', key);
+    input[key] = path.posix.join('./virtual', key);
     return input;
   }, {}),
   external(id) {
@@ -80,7 +80,9 @@ export default {
     {
       async load(id) {
         if (!id.startsWith(virtualModule)) return null;
-        const entry = path.relative(virtualModule, id).replace(/\.m?js$/, '');
+        const entry = path.posix
+          .relative(virtualModule, id)
+          .replace(/\.m?js$/, '');
         if (entry === 'version') return version;
         return exports[entry] || null;
       },
@@ -89,23 +91,23 @@ export default {
         if (!source.startsWith('.') && !source.startsWith('virtual/'))
           return null;
 
-        const target = path.join(
-          importer ? path.dirname(importer) : cwd,
+        const target = path.posix.join(
+          importer ? path.posix.dirname(importer) : cwd,
           source
         );
 
-        const virtualEntry = path.relative(virtualModule, target);
+        const virtualEntry = path.posix.relative(virtualModule, target);
         if (!virtualEntry.startsWith('../')) {
-          const aliasSource = path.join(aliasModule, virtualEntry);
+          const aliasSource = path.posix.join(aliasModule, virtualEntry);
           const alias = await this.resolve(aliasSource, undefined, {
             skipSelf: true,
           });
           return alias || target;
         }
 
-        const graphqlEntry = path.relative(graphqlModule, target);
+        const graphqlEntry = path.posix.relative(graphqlModule, target);
         if (!graphqlEntry.startsWith('../')) {
-          const aliasSource = path.join(aliasModule, graphqlEntry);
+          const aliasSource = path.posix.join(aliasModule, graphqlEntry);
           const alias = await this.resolve(aliasSource, undefined, {
             skipSelf: true,
           });
