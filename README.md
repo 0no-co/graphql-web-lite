@@ -46,7 +46,7 @@ In your `package.json` file you can define your `graphql` installation to use
 {
   "dependencies": {
 -    "graphql": "^15.5.0"
-+    "graphql": "npm:graphql-web-lite@^15.5.1000"
++    "graphql": "npm:graphql-web-lite@^15.5.1001"
   }
 }
 ```
