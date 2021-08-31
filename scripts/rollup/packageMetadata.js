@@ -8,7 +8,7 @@ const versionInfo = {
   major: parsedVersion.major,
   minor: parsedVersion.minor,
   patch: parsedVersion.patch,
-  preReleaseTag: 'lite.' + parsedVersion.prerelease.join('.'),
+  preReleaseTag: 'lite',
   lite: true,
 };
 
@@ -20,6 +20,8 @@ export const versionInfo = ${JSON.stringify(versionInfo)};
 export const packageMetadata = JSON.stringify(
   {
     ...gqlPkg,
+    private: undefined,
+    publishConfig: undefined,
     name: 'graphql-web-lite',
     version: rootPkg.version,
     sideEffects: false,
