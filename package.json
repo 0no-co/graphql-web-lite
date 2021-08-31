@@ -3,11 +3,11 @@
   "version": "15.0.0-alpha.1",
   "license": "MIT",
   "workspaces": [
-    "dist",
     "scripts/buildenv"
   ],
   "scripts": {
     "test": "jest",
+    "lint": "eslint --ext=js,mjs .",
     "build": "rollup -c scripts/rollup/config.js",
     "size-check": "yarn workspace @graphql-web-lite/buildenv build",
     "prepublishOnly": "run-s test build"
@@ -32,6 +32,9 @@
     "@rollup/plugin-buble": "^0.21.3",
     "@rollup/plugin-node-resolve": "^13.0.4",
     "babel-plugin-modular-graphql": "^1.0.1",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
     "graphql": "^16.0.0-alpha.5",
     "husky-v4": "^4.3.8",
     "jest": "^27.1.0",
@@ -47,8 +50,15 @@
   "prettier": {
     "singleQuote": true
   },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "./scripts/eslint/preset.js"
+    ]
+  },
   "lint-staged": {
-    "*.{mjs,js,json,md}": "prettier --write"
+    "*.{mjs,js}": "eslint --fix",
+    "*.{json,md}": "prettier --write"
   },
   "husky": {
     "hooks": {

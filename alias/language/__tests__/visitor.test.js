@@ -3,7 +3,7 @@
 import { Kind, parse } from 'graphql';
 import { visit, visitInParallel, BREAK } from '../visitor';
 
-const kitchenSinkQuery: string = String.raw`
+const kitchenSinkQuery = String.raw`
 query queryName($foo: ComplexType, $site: Site = MOBILE) @onQuery {
   whoever123is: node(id: [123, 456]) {
     id
@@ -123,7 +123,7 @@ describe('Visitor', () => {
   });
 
   it('validates path argument', () => {
-    const visited: Array<any> = [];
+    const visited = [];
 
     const ast = parse('{ a }', { noLocation: true });
 
@@ -154,7 +154,7 @@ describe('Visitor', () => {
 
   it('validates ancestors argument', () => {
     const ast = parse('{ a }', { noLocation: true });
-    const visitedNodes: Array<any> = [];
+    const visitedNodes = [];
 
     visit(ast, {
       enter(node, key, parent, _path, ancestors) {
@@ -183,7 +183,7 @@ describe('Visitor', () => {
   it('allows editing a node both on enter and on leave', () => {
     const ast = parse('{ a, b, c { a, b, c } }', { noLocation: true });
 
-    let selectionSet: SelectionSetNode;
+    let selectionSet;
 
     const editedAST = visit(ast, {
       OperationDefinition: {
@@ -335,7 +335,7 @@ describe('Visitor', () => {
   });
 
   it('allows skipping a sub-tree', () => {
-    const visited: Array<any> = [];
+    const visited = [];
 
     const ast = parse('{ a, b { x }, c }', { noLocation: true });
     visit(ast, {
@@ -373,7 +373,7 @@ describe('Visitor', () => {
   });
 
   it('allows early exit while visiting', () => {
-    const visited: Array<any> = [];
+    const visited = [];
 
     const ast = parse('{ a, b { x }, c }', { noLocation: true });
     visit(ast, {
@@ -408,7 +408,7 @@ describe('Visitor', () => {
   });
 
   it('allows early exit while leaving', () => {
-    const visited: Array<any> = [];
+    const visited = [];
 
     const ast = parse('{ a, b { x }, c }', { noLocation: true });
     visit(ast, {
@@ -445,7 +445,7 @@ describe('Visitor', () => {
   });
 
   it('allows a named functions visitor API', () => {
-    const visited: Array<any> = [];
+    const visited = [];
 
     const ast = parse('{ a, b { x }, c }', { noLocation: true });
     visit(ast, {
@@ -479,8 +479,8 @@ describe('Visitor', () => {
 
   it('visits kitchen sink', () => {
     const ast = parse(kitchenSinkQuery);
-    const visited: Array<any> = [];
-    const argsStack: Array<any> = [];
+    const visited = [];
+    const argsStack = [];
 
     visit(ast, {
       enter(node, key, parent) {
@@ -863,7 +863,7 @@ describe('Visitor', () => {
     // Note: nearly identical to the above test of the same test but
     // using visitInParallel.
     it('allows skipping a sub-tree', () => {
-      const visited: Array<any> = [];
+      const visited = [];
 
       const ast = parse('{ a, b { x }, c }');
       visit(
@@ -906,7 +906,7 @@ describe('Visitor', () => {
     });
 
     it('allows skipping different sub-trees', () => {
-      const visited: Array<any> = [];
+      const visited = [];
 
       const ast = parse('{ a { x }, b { y} }');
       visit(
@@ -982,7 +982,7 @@ describe('Visitor', () => {
     // Note: nearly identical to the above test of the same test but
     // using visitInParallel.
     it('allows early exit while visiting', () => {
-      const visited: Array<any> = [];
+      const visited = [];
 
       const ast = parse('{ a, b { x }, c }');
       visit(
@@ -1022,7 +1022,7 @@ describe('Visitor', () => {
     });
 
     it('allows early exit from different points', () => {
-      const visited: Array<any> = [];
+      const visited = [];
 
       const ast = parse('{ a { y }, b { x } }');
       visit(
@@ -1084,7 +1084,7 @@ describe('Visitor', () => {
     // Note: nearly identical to the above test of the same test but
     // using visitInParallel.
     it('allows early exit while leaving', () => {
-      const visited: Array<any> = [];
+      const visited = [];
 
       const ast = parse('{ a, b { x }, c }');
       visit(
@@ -1125,7 +1125,7 @@ describe('Visitor', () => {
     });
 
     it('allows early exit from leaving different points', () => {
-      const visited: Array<any> = [];
+      const visited = [];
 
       const ast = parse('{ a { y }, b { x } }');
       visit(
@@ -1201,7 +1201,7 @@ describe('Visitor', () => {
     });
 
     it('allows for editing on enter', () => {
-      const visited: Array<any> = [];
+      const visited = [];
 
       const ast = parse('{ a, b, c { a, b, c } }', { noLocation: true });
       const editedAST = visit(
@@ -1265,7 +1265,7 @@ describe('Visitor', () => {
     });
 
     it('allows for editing on leave', () => {
-      const visited: Array<any> = [];
+      const visited = [];
 
       const ast = parse('{ a, b, c { a, b, c } }', { noLocation: true });
       const editedAST = visit(
