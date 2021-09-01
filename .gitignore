@@ -2,7 +2,6 @@ yarn-error.log
 node_modules/
 coverage/
 dist/
-!dist/.gitkeep
 /cypress/videos/**
 /cypress/screenshots/**
 /scripts/buildenv/dist-*
