@@ -6,23 +6,18 @@ export function visit(node, visitor) {
   const path = [];
   const ancestors = [];
 
-  function callback(node, key, parent, isLeaving) {
-    const visitFn = getVisitFn(visitor, node.kind, isLeaving);
-    if (visitFn) {
-      const result = visitFn.call(visitor, node, key, parent, path, ancestors);
-      if (result === BREAK) throw BREAK;
-      return result;
-    }
-  }
-
   function traverse(node, key, parent) {
     let hasEdited = false;
 
-    const resultEnter = callback(node, key, parent, false);
+    const enter = getVisitFn(visitor, node.kind, false);
+    const resultEnter =
+      enter && enter.call(visitor, node, key, parent, path, ancestors);
     if (resultEnter === false) {
       return node;
     } else if (resultEnter === null) {
       return null;
+    } else if (resultEnter === BREAK) {
+      throw BREAK;
     } else if (resultEnter && typeof resultEnter.kind === 'string') {
       hasEdited = resultEnter !== node;
       node = resultEnter;
@@ -68,8 +63,12 @@ export function visit(node, visitor) {
     }
 
     if (parent) ancestors.pop();
-    const resultLeave = callback(node, key, parent, true);
-    if (resultLeave !== undefined) {
+    const leave = getVisitFn(visitor, node.kind, true);
+    const resultLeave =
+      leave && leave.call(visitor, node, key, parent, path, ancestors);
+    if (resultLeave === BREAK) {
+      throw BREAK;
+    } else if (resultLeave !== undefined) {
       return resultLeave;
     } else if (resultEnter !== undefined) {
       return hasEdited ? copy : resultEnter;
