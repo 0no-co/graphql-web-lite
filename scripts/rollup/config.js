@@ -124,6 +124,18 @@ export default {
           fileName: 'package.json',
           source: packageMetadata,
         });
+
+        this.emitFile({
+          type: 'asset',
+          fileName: 'README.md',
+          source: await fs.readFile('README.md'),
+        });
+
+        this.emitFile({
+          type: 'asset',
+          fileName: 'LICENSE',
+          source: await fs.readFile('./LICENSE'),
+        });
       },
 
       async renderChunk(_code, { fileName }) {
