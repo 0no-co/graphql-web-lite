@@ -72,7 +72,7 @@ export function visit(node, visitor) {
     if (resultLeave !== undefined) {
       return resultLeave;
     } else if (resultEnter !== undefined) {
-      return resultEnter;
+      return hasEdited ? copy : resultEnter;
     } else {
       return hasEdited ? copy : node;
     }

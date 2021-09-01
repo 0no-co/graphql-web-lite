@@ -1,6 +1,6 @@
 // See: https://github.com/graphql/graphql-js/blob/976d64b/src/language/__tests__/visitor-test.ts
 
-import { Kind, parse } from 'graphql';
+import { Kind, parse, print } from 'graphql';
 import { visit, visitInParallel, BREAK } from '../visitor';
 
 const kitchenSinkQuery = String.raw`
@@ -475,6 +475,47 @@ describe('Visitor', () => {
       ['enter', 'Name', 'c'],
       ['leave', 'SelectionSet', undefined],
     ]);
+  });
+
+  it('handles deep immutable edits correctly when using "enter"', () => {
+    const formatNode = (node) => {
+      if (
+        node.selectionSet &&
+        !node.selectionSet.selections.some(
+          (node) =>
+            node.kind === Kind.FIELD &&
+            node.name.value === '__typename' &&
+            !node.alias
+        )
+      ) {
+        return {
+          ...node,
+          selectionSet: {
+            ...node.selectionSet,
+            selections: [
+              ...node.selectionSet.selections,
+              {
+                kind: Kind.FIELD,
+                name: {
+                  kind: Kind.NAME,
+                  value: '__typename',
+                },
+              },
+            ],
+          },
+        };
+      }
+    };
+    const ast = parse('{ players { nodes { id } } }');
+    const expected = parse(
+      '{ players { nodes { id __typename } __typename } }'
+    );
+    const visited = visit(ast, {
+      Field: formatNode,
+      InlineFragment: formatNode,
+    });
+
+    expect(print(visited)).toEqual(print(expected));
   });
 
   it('visits kitchen sink', () => {
