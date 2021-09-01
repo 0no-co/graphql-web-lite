@@ -5,5 +5,12 @@ export default defineConfig({
   plugins: [preact()],
   build: {
     outDir: './dist-graphql',
+    rollupOptions: {
+      output: {
+        entryFileNames: `assets/[name].js`,
+        chunkFileNames: `assets/[name].js`,
+        assetFileNames: `assets/[name].[ext]`,
+      },
+    },
   },
 });
