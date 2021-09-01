@@ -1,4 +1,5 @@
 import { render } from 'preact';
+import { Provider, createClient } from '@urql/preact';
 import Pokemons from './Pokemons';
 
 const client = createClient({
