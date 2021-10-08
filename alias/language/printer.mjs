@@ -36,11 +36,15 @@ export function print(node) {
       );
 
     case 'Field':
+      let prefix = wrap('', print(node.alias), ': ') + print(node.name);
+      if (node.required === 'optional') {
+        prefix += '?';
+      } else if (node.required === 'required') {
+        prefix += '!';
+      }
       return join(
         [
-          wrap('', print(node.alias), ': ') +
-            print(node.name) +
-            wrap('(', join(print(node.arguments), ', '), ')'),
+          prefix + wrap('(', join(print(node.arguments), ', '), ')'),
           join(print(node.directives), ' '),
           print(node.selectionSet),
         ],

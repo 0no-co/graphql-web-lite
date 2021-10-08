@@ -54,6 +54,14 @@ describe('Printer: Query document', () => {
         name
       }
     `);
+
+    const queryWithNullabilityFields = parse('query { id?, name! }');
+    expect(print(queryWithNullabilityFields)).toBe(dedent`
+      {
+        id?
+        name!
+      }
+    `);
   });
 
   it('prints query with variable directives', () => {

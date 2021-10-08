@@ -147,12 +147,20 @@ const directives = match()`
   ${directive}*
 `;
 
+const nullability = match(null, (x) => {
+  return x[0] === '?' ? 'optional' : 'required';
+})`
+  :${ignored}?
+  ${/[?!]/}
+`;
+
 const field = match(Kind.FIELD, (x) => {
   let i = 0;
   return {
     kind: x.tag,
     alias: x[1].kind === Kind.NAME ? x[i++] : undefined,
     name: x[i++],
+    required: typeof x[i] === 'string' ? x[i++] : 'unset',
     arguments: x[i++],
     directives: x[i++],
     selectionSet: x[i++],
@@ -164,6 +172,7 @@ const field = match(Kind.FIELD, (x) => {
     (?: ${ignored}? ${':'} ${ignored}?)
     ${name}
   )?
+  ${nullability}?
   ${args}
   ${directives}
   ${() => selectionSet}?
