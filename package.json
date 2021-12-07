@@ -1,7 +1,7 @@
 {
   "name": "graphql-web-lite",
   "description": "graphql npm package slimmed down for client-side libraries",
-  "version": "15.5.1002",
+  "version": "16.1.1000",
   "license": "MIT",
   "private": true,
   "workspaces": [
