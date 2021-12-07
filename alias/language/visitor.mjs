@@ -1,6 +1,11 @@
-import { getVisitFn, visitInParallel, BREAK } from 'graphql/language/visitor';
+import {
+  getEnterLeaveForKind,
+  getVisitFn,
+  visitInParallel,
+  BREAK,
+} from 'graphql/language/visitor';
 
-export { getVisitFn, visitInParallel, BREAK };
+export { getEnterLeaveForKind, getVisitFn, visitInParallel, BREAK };
 
 export function visit(node, visitor) {
   const path = [];

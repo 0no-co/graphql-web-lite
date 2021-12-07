@@ -37,7 +37,7 @@
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "graphql": "^16.0.0-alpha.5",
+    "graphql": "^16.1.0",
     "husky-v4": "^4.3.8",
     "jest": "^27.1.0",
     "lint-staged": "^11.1.2",

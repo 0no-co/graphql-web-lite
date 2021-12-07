@@ -2,10 +2,10 @@ export function printBlockString(str) {
   return '"""\n' + JSON.stringify(str).slice(1, -1) + '\n"""';
 }
 
-export function dedentBlockStringValue(str) {
-  return str;
+export function isPrintableAsBlockString(value) {
+  return true;
 }
 
-export function getBlockStringIndentation(str) {
-  return 0;
+export function dedentBlockStringLines(lines) {
+  return lines;
 }
