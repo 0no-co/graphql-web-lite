@@ -303,3 +303,25 @@ away.
 | `GraphQLInputObjectType`   | _removed_   | n/a                                                                 |
 
 </details>
+
+### Bundlesize Impact
+
+Most GraphQL client-side libraries use the following common set of imports from the `graphql` library.
+Assuming a transformation like [`babel-plugin-modular-graphql`](https://github.com/kitten/babel-plugin-modular-graphql/)
+or granular imports in general this creates a short list of utilities.
+
+```js
+export { valueFromASTUntyped } from 'graphql/utilities/valueFromASTUntyped.mjs';
+export { GraphQLError } from 'graphql/error/GraphQLError.mjs';
+export { Kind } from 'graphql/language/kinds.mjs';
+export { parse } from 'graphql/language/parser.mjs';
+export { print } from 'graphql/language/printer.mjs';
+export { visit } from 'graphql/language/visitor.mjs';
+```
+
+The minzipped size of the imports is about `11.2kB` in a given output bundle, which assumes all the above imports are
+in use. When the GraphQL language parser is dropped from the bundle, for instance by precompiling queries and excluding
+it in a compilation step, the resulting minzipped size drops to `5.55kB`.
+
+When `graphql-web-lite` replaces the `graphql` package the minzipped size drops from the `11.2kB` figure down to `5.44kB`,
+and `3.19kB` without the parser.
