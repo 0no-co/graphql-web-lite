@@ -5,3 +5,4 @@ dist/
 /cypress/videos/**
 /cypress/screenshots/**
 /scripts/buildenv/dist-*
+yarn.lock
