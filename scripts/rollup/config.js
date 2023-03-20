@@ -198,6 +198,7 @@ export default {
 
     buble({
       transforms: {
+        stickyRegExp: false,
         unicodeRegExp: false,
         dangerousForOf: true,
         dangerousTaggedTemplateString: true,
