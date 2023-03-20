@@ -28,6 +28,7 @@
     "url": "https://github.com/kitten/graphql-web-lite.git"
   },
   "devDependencies": {
+    "@0no-co/graphql.web": "^0.1.2",
     "@babel/core": "^7.15.0",
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-buble": "^0.21.3",

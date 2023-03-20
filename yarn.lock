@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@0no-co/graphql.web@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@0no-co/graphql.web/-/graphql.web-0.1.2.tgz#6a8f71bad35e1db0f1c464bc5aaf7a8d02c03b23"
+  integrity sha512-Jgn4aaiXit6yDL4tBZvv1wV2x9rCEsElqpeNxO80NHUNOPP+QY9VxA1dq9RTSaeaeN6/i994gNV+UvRIX3gQLQ==
+
 "@babel/code-frame@7.12.11":
   version "7.12.11"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.12.11.tgz#f4ad435aa263db935b8f10f2c552d23fb716a63f"

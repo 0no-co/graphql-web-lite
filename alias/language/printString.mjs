@@ -1,1 +1,1 @@
-export const printString = JSON.stringify;
+export { printString } from '@0no-co/graphql.web';
