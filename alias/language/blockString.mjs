@@ -1,6 +1,4 @@
-export function printBlockString(str) {
-  return '"""\n' + JSON.stringify(str).slice(1, -1) + '\n"""';
-}
+export { printBlockString } from '@0no-co/graphql.web';
 
 export function isPrintableAsBlockString(value) {
   return true;
