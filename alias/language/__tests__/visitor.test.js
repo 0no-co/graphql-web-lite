@@ -1,5 +1,6 @@
 // See: https://github.com/graphql/graphql-js/blob/976d64b/src/language/__tests__/visitor-test.ts
 
+import { describe, it, expect } from 'vitest';
 import { Kind, parse, print } from 'graphql';
 import { visit, visitInParallel, BREAK } from '../visitor';
 
@@ -268,9 +269,7 @@ describe('Visitor', () => {
 
     expect(ast).toEqual(parse('{ a, b, c { a, b, c } }', { noLocation: true }));
 
-    expect(editedAST).toEqual(
-      parse('{ a,    c { a,    c } }', { noLocation: true })
-    );
+    expect(editedAST).toEqual(parse('{ a,    c { a,    c } }', { noLocation: true }));
   });
 
   it('allows for editing on leave', () => {
@@ -286,9 +285,7 @@ describe('Visitor', () => {
 
     expect(ast).toEqual(parse('{ a, b, c { a, b, c } }', { noLocation: true }));
 
-    expect(editedAST).toEqual(
-      parse('{ a,    c { a,    c } }', { noLocation: true })
-    );
+    expect(editedAST).toEqual(parse('{ a,    c { a,    c } }', { noLocation: true }));
   });
 
   it('ignores false returned on leave', () => {
@@ -299,9 +296,7 @@ describe('Visitor', () => {
       },
     });
 
-    expect(returnedAST).toEqual(
-      parse('{ a, b, c { a, b, c } }', { noLocation: true })
-    );
+    expect(returnedAST).toEqual(parse('{ a, b, c { a, b, c } }', { noLocation: true }));
   });
 
   it('visits edited node', () => {
@@ -478,14 +473,11 @@ describe('Visitor', () => {
   });
 
   it('handles deep immutable edits correctly when using "enter"', () => {
-    const formatNode = (node) => {
+    const formatNode = node => {
       if (
         node.selectionSet &&
         !node.selectionSet.selections.some(
-          (node) =>
-            node.kind === Kind.FIELD &&
-            node.name.value === '__typename' &&
-            !node.alias
+          node => node.kind === Kind.FIELD && node.name.value === '__typename' && !node.alias
         )
       ) {
         return {
@@ -507,9 +499,7 @@ describe('Visitor', () => {
       }
     };
     const ast = parse('{ players { nodes { id } } }');
-    const expected = parse(
-      '{ players { nodes { id __typename } __typename } }'
-    );
+    const expected = parse('{ players { nodes { id __typename } __typename } }');
     const visited = visit(ast, {
       Field: formatNode,
       InlineFragment: formatNode,
@@ -525,24 +515,14 @@ describe('Visitor', () => {
 
     visit(ast, {
       enter(node, key, parent) {
-        visited.push([
-          'enter',
-          node.kind,
-          key,
-          isNode(parent) ? parent.kind : undefined,
-        ]);
+        visited.push(['enter', node.kind, key, isNode(parent) ? parent.kind : undefined]);
 
         checkVisitorFnArgs(ast, arguments);
         argsStack.push([...arguments]);
       },
 
       leave(node, key, parent) {
-        visited.push([
-          'leave',
-          node.kind,
-          key,
-          isNode(parent) ? parent.kind : undefined,
-        ]);
+        visited.push(['leave', node.kind, key, isNode(parent) ? parent.kind : undefined]);
 
         expect(argsStack.pop()).toEqual([...arguments]);
       },
@@ -1269,13 +1249,9 @@ describe('Visitor', () => {
         ])
       );
 
-      expect(ast).toEqual(
-        parse('{ a, b, c { a, b, c } }', { noLocation: true })
-      );
+      expect(ast).toEqual(parse('{ a, b, c { a, b, c } }', { noLocation: true }));
 
-      expect(editedAST).toEqual(
-        parse('{ a,    c { a,    c } }', { noLocation: true })
-      );
+      expect(editedAST).toEqual(parse('{ a,    c { a,    c } }', { noLocation: true }));
 
       expect(visited).toEqual([
         ['enter', 'Document', undefined],
@@ -1333,13 +1309,9 @@ describe('Visitor', () => {
         ])
       );
 
-      expect(ast).toEqual(
-        parse('{ a, b, c { a, b, c } }', { noLocation: true })
-      );
+      expect(ast).toEqual(parse('{ a, b, c { a, b, c } }', { noLocation: true }));
 
-      expect(editedAST).toEqual(
-        parse('{ a,    c { a,    c } }', { noLocation: true })
-      );
+      expect(editedAST).toEqual(parse('{ a,    c { a,    c } }', { noLocation: true }));
 
       expect(visited).toEqual([
         ['enter', 'Document', undefined],

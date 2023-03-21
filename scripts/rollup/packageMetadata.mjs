@@ -1,8 +1,14 @@
-import { parse } from 'semver';
+import semver from 'semver';
+import * as url from 'url';
+import * as path from 'path';
+import { createRequire } from 'node:module';
+
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
 
 const rootPkg = require('../../package.json');
 const gqlPkg = require('graphql/package.json');
-const parsedVersion = parse(rootPkg.version);
+const parsedVersion = semver.parse(rootPkg.version);
 
 const versionInfo = {
   major: parsedVersion.major,
@@ -33,3 +39,5 @@ export const packageMetadata = JSON.stringify(
   null,
   2
 );
+
+export const importMap = require('./importMap.json');

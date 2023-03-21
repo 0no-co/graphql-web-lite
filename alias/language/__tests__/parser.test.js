@@ -1,6 +1,7 @@
 // See: https://github.com/graphql/graphql-js/blob/976d64b/src/language/__tests__/parser-test.ts
 // Note: Tests regarding reserved keywords have been removed.
 
+import { describe, it, expect } from 'vitest';
 import { Kind } from 'graphql';
 import { parse, parseValue, parseType } from '../parser';
 

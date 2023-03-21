@@ -4,15 +4,15 @@ import { promises as fs } from 'fs';
 import resolve from '@rollup/plugin-node-resolve';
 import buble from '@rollup/plugin-buble';
 import replace from '@rollup/plugin-replace';
+import terser from '@rollup/plugin-terser';
 import { babel } from '@rollup/plugin-babel';
-import { terser } from 'rollup-plugin-terser';
 
 import babelModularGraphQL from 'babel-plugin-modular-graphql';
 import babelTransformComputedProps from '../babel/transformComputedProps.mjs';
 import babelTransformDevAssert from '../babel/transformDevAssert.mjs';
 import babelTransformObjectFreeze from '../babel/transformObjectFreeze.mjs';
 
-import { packageMetadata, version } from './packageMetadata';
+import { importMap, packageMetadata, version } from './packageMetadata.mjs';
 
 const cwd = process.cwd();
 const graphqlModule = path.posix.join(cwd, 'node_modules/graphql/');
@@ -24,22 +24,19 @@ const externalModules = ['dns', 'fs', 'path', 'url'];
 const externalPredicate = new RegExp(`^(${externalModules.join('|')})($|/)`);
 
 const exports = {};
-const importMap = require('./importMap.json');
 
 for (const key in importMap) {
   const { from, local } = importMap[key];
   if (/\/jsutils\//g.test(from)) continue;
 
   const name = from.replace(/^graphql\//, '');
-  exports[name] =
-    (exports[name] || '') + `export { ${key} } from '${EXTERNAL}'\n`;
+  exports[name] = (exports[name] || '') + `export { ${key} } from '${EXTERNAL}'\n`;
 
   const parts = name.split('/');
   for (let i = parts.length - 1; i > 0; i--) {
     const name = `${parts.slice(0, i).join('/')}/index`;
     const from = `./${parts.slice(i).join('/')}`;
-    exports[name] =
-      (exports[name] || '') + `export { ${local} } from '${from}'\n`;
+    exports[name] = (exports[name] || '') + `export { ${local} } from '${from}'\n`;
   }
 
   const index = `export { ${local} } from './${name}'\n`;
@@ -81,21 +78,15 @@ export default {
     {
       async load(id) {
         if (!id.startsWith(virtualModule)) return null;
-        const entry = path.posix
-          .relative(virtualModule, id)
-          .replace(/\.m?js$/, '');
+        const entry = path.posix.relative(virtualModule, id).replace(/\.m?js$/, '');
         if (entry === 'version') return version;
         return exports[entry] || null;
       },
 
       async resolveId(source, importer) {
-        if (!source.startsWith('.') && !source.startsWith('virtual/'))
-          return null;
+        if (!source.startsWith('.') && !source.startsWith('virtual/')) return null;
 
-        const target = path.posix.join(
-          importer ? path.posix.dirname(importer) : cwd,
-          source
-        );
+        const target = path.posix.join(importer ? path.posix.dirname(importer) : cwd, source);
 
         const virtualEntry = path.posix.relative(virtualModule, target);
         if (!virtualEntry.startsWith('../')) {
@@ -134,19 +125,17 @@ export default {
         this.emitFile({
           type: 'asset',
           fileName: 'LICENSE',
-          source: await fs.readFile('./LICENSE'),
+          source: await fs.readFile('./LICENSE.md'),
         });
       },
 
       async renderChunk(_code, { fileName }) {
         const name = fileName.replace(/\.m?js$/, '');
 
-        const getContents = async (extension) => {
+        const getContents = async extension => {
           try {
             const name = fileName.replace(/\.m?js$/, '');
-            const contents = await fs.readFile(
-              path.join(graphqlModule, name + extension)
-            );
+            const contents = await fs.readFile(path.join(graphqlModule, name + extension));
             return contents;
           } catch (_error) {
             return null;
@@ -192,7 +181,6 @@ export default {
         babelTransformObjectFreeze,
         babelTransformComputedProps,
         babelModularGraphQL,
-        'reghex/babel',
       ],
     }),
 

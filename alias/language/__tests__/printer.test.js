@@ -1,5 +1,6 @@
 // See: https://github.com/graphql/graphql-js/blob/976d64b/src/language/__tests__/printer-test.ts
 
+import { describe, it, expect } from 'vitest';
 import { parse } from '../parser';
 import { print } from '../printer';
 
@@ -35,9 +36,7 @@ describe('Printer: Query document', () => {
       }
     `);
 
-    const queryASTWithArtifacts = parse(
-      'query ($foo: TestType) @testDirective { id, name }'
-    );
+    const queryASTWithArtifacts = parse('query ($foo: TestType) @testDirective { id, name }');
     expect(print(queryASTWithArtifacts)).toBe(dedent`
       query ($foo: TestType) @testDirective {
         id
@@ -45,9 +44,7 @@ describe('Printer: Query document', () => {
       }
     `);
 
-    const mutationASTWithArtifacts = parse(
-      'mutation ($foo: TestType) @testDirective { id, name }'
-    );
+    const mutationASTWithArtifacts = parse('mutation ($foo: TestType) @testDirective { id, name }');
     expect(print(mutationASTWithArtifacts)).toBe(dedent`
       mutation ($foo: TestType) @testDirective {
         id
@@ -68,9 +65,7 @@ describe('Printer: Query document', () => {
   });
 
   it('keeps arguments on one line if line is short (<= 80 chars)', () => {
-    const printed = print(
-      parse('{trip(wheelchair:false arriveBy:false){dateTime}}')
-    );
+    const printed = print(parse('{trip(wheelchair:false arriveBy:false){dateTime}}'));
 
     expect(printed).toBe(
       dedent`
