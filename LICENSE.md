@@ -1,6 +1,7 @@
 MIT License
 
-Copyright (c) GraphQL Contributors
+Copyright (c) GraphQL maintainers,
+Copyright (c) 0no.co
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
