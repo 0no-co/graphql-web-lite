@@ -1,10 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 
-const hookSource = path.resolve(
-  __dirname,
-  '../node_modules/husky-v4/sh/husky.sh'
-);
+const hookSource = path.resolve(__dirname, '../node_modules/husky-v4/sh/husky.sh');
 const hook = path.resolve(__dirname, '../.git/hooks/husky.sh');
 const localHook = path.resolve(__dirname, '../.git/hooks/husky.local.sh');
 const gitConfig = path.resolve(__dirname, '../.git/config');
