@@ -30,8 +30,7 @@ const plugin = ({ template, types: t }) => {
               p.parentPath.parentPath.node.body.length === 1 &&
               p.parentPath.parentPath.node.body[0] === path.parentPath.node &&
               t.isIfStatement(p.parentPath.parentPath.parentPath.node) &&
-              p.parentPath.parentPath.parentPath.node.consequent ===
-                p.parentPath.parentPath.node &&
+              p.parentPath.parentPath.parentPath.node.consequent === p.parentPath.parentPath.node &&
               !p.parentPath.parentPath.node.alternate
             ) {
               p = p.parentPath.parentPath.parentPath;
