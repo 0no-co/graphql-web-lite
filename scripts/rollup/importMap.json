@@ -31,6 +31,14 @@
     "local": "FragmentsOnCompositeTypesRule",
     "from": "graphql/validation/rules/FragmentsOnCompositeTypesRule"
   },
+  "GRAPHQL_MAX_INT": {
+    "local": "GRAPHQL_MAX_INT",
+    "from": "graphql/type/scalars"
+  },
+  "GRAPHQL_MIN_INT": {
+    "local": "GRAPHQL_MIN_INT",
+    "from": "graphql/type/scalars"
+  },
   "GraphQLBoolean": {
     "local": "GraphQLBoolean",
     "from": "graphql/type/scalars"
@@ -381,7 +389,7 @@
   },
   "createSourceEventStream": {
     "local": "createSourceEventStream",
-    "from": "graphql/subscription/subscribe"
+    "from": "graphql/execution/subscribe"
   },
   "defaultFieldResolver": {
     "local": "defaultFieldResolver",
@@ -423,6 +431,14 @@
     "local": "getDirectiveValues",
     "from": "graphql/execution/values"
   },
+  "getArgumentValues": {
+    "local": "getArgumentValues",
+    "from": "graphql/execution/values"
+  },
+  "getVariableValues": {
+    "local": "getVariableValues",
+    "from": "graphql/execution/values"
+  },
   "getIntrospectionQuery": {
     "local": "getIntrospectionQuery",
     "from": "graphql/utilities/getIntrospectionQuery"
@@ -437,6 +453,14 @@
   },
   "getNullableType": {
     "local": "getNullableType",
+    "from": "graphql/type/definition"
+  },
+  "resolveObjMapThunk": {
+    "local": "resolveObjMapThunk",
+    "from": "graphql/type/definition"
+  },
+  "resolveReadonlyArrayThunk": {
+    "local": "resolveReadonlyArrayThunk",
     "from": "graphql/type/definition"
   },
   "getOperationAST": {

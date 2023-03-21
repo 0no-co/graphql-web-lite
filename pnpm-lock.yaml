@@ -1,7 +1,7 @@
 lockfileVersion: 5.4
 
 overrides:
-  graphql: ~16.1.0
+  graphql: ~16.6.0
 
 importers:
 
@@ -22,7 +22,7 @@ importers:
       eslint-config-prettier: ^8.7.0
       eslint-plugin-prettier: ^4.2.1
       eslint-plugin-tsdoc: ^0.2.17
-      graphql: ~16.1.0
+      graphql: ~16.6.0
       husky-v4: ^4.3.8
       lint-staged: ^11.1.2
       npm-run-all: ^4.1.5
@@ -48,7 +48,7 @@ importers:
       eslint-config-prettier: 8.8.0_eslint@8.36.0
       eslint-plugin-prettier: 4.2.1_i2qmqyy4fgpgq2h7f6vnil3crq
       eslint-plugin-tsdoc: 0.2.17
-      graphql: 16.1.0
+      graphql: 16.6.0
       husky-v4: 4.3.8
       lint-staged: 11.1.2
       npm-run-all: 4.1.5
@@ -63,12 +63,12 @@ importers:
     specifiers:
       '@preact/preset-vite': ^2.1.0
       '@urql/preact': ^2.0.2
-      graphql: ~16.1.0
+      graphql: ~16.6.0
       preact: ^10.5.14
       vite: ^2.2.4
     dependencies:
-      '@urql/preact': 2.0.4_enqwyn2mp7ov4bsff3p6neltqi
-      graphql: 16.1.0
+      '@urql/preact': 2.0.4_4b6zx5pjiumwpx2pl4jfr2njpq
+      graphql: 16.6.0
       preact: 10.13.1
     devDependencies:
       '@preact/preset-vite': 2.5.0_preact@10.13.1+vite@2.9.15
@@ -785,12 +785,12 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
-  /@graphql-typed-document-node/core/3.2.0_graphql@16.1.0:
+  /@graphql-typed-document-node/core/3.2.0_graphql@16.6.0:
     resolution: {integrity: sha512-mB9oAsNCm9aM3/SOv4YtBMqZbYj10R7dkq8byBqxGY/ncFwhf2oQzMV+LCRlWoDSEBJ3COiR1yeDvMtsoOsuFQ==}
     peerDependencies:
       graphql: '*'
     dependencies:
-      graphql: 16.1.0
+      graphql: 16.6.0
     dev: false
 
   /@humanwhocodes/config-array/0.11.8:
@@ -1219,24 +1219,24 @@ packages:
       eslint-visitor-keys: 3.3.0
     dev: true
 
-  /@urql/core/2.6.1_graphql@16.1.0:
+  /@urql/core/2.6.1_graphql@16.6.0:
     resolution: {integrity: sha512-gYrEHy3tViJhwIhauK6MIf2Qp09QTsgNHZRd0n71rS+hF6gdwjspf1oKljl4m25+272cJF7fPjBUGmjaiEr7Kg==}
     peerDependencies:
       graphql: '*'
     dependencies:
-      '@graphql-typed-document-node/core': 3.2.0_graphql@16.1.0
-      graphql: 16.1.0
+      '@graphql-typed-document-node/core': 3.2.0_graphql@16.6.0
+      graphql: 16.6.0
       wonka: 4.0.15
     dev: false
 
-  /@urql/preact/2.0.4_enqwyn2mp7ov4bsff3p6neltqi:
+  /@urql/preact/2.0.4_4b6zx5pjiumwpx2pl4jfr2njpq:
     resolution: {integrity: sha512-xH6dT3H4grF4Z0rR7fzirCSn1kZMUwwb3KJrT60aBgTHuky4GQRrQzteVm4No7+PDefeTGH3TCrgEKyQjUNUug==}
     peerDependencies:
       graphql: '*'
       preact: '>= 10.0.0'
     dependencies:
-      '@urql/core': 2.6.1_graphql@16.1.0
-      graphql: 16.1.0
+      '@urql/core': 2.6.1_graphql@16.6.0
+      graphql: 16.6.0
       preact: 10.13.1
       wonka: 4.0.15
     dev: false
@@ -2390,9 +2390,9 @@ packages:
     resolution: {integrity: sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==}
     dev: true
 
-  /graphql/16.1.0:
-    resolution: {integrity: sha512-+PIjmhqGHMIxtnlEirRXDHIzs0cAHAozKG5M2w2N4TnS8VzCxO3bbv1AW9UTeycBfl2QsPduxcVrBvANFKQhiw==}
-    engines: {node: ^12.22.0 || ^14.16.0 || >=16.0.0}
+  /graphql/16.6.0:
+    resolution: {integrity: sha512-KPIBPDlW7NxrbT/eh4qPXz5FiFdL5UbaA0XUNz2Rp3Z3hqBSkbj0GVjwFDztsWVauZUWsbKHgMg++sk8UX0bkw==}
+    engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
 
   /has-bigints/1.0.1:
     resolution: {integrity: sha512-LSBS2LjbNBTf6287JEbEzvJgftkF5qFkmCo9hDRpAzKhUOlJ+hx8dd4USs00SgsUNwc4617J9ki5YtEClM2ffA==}
