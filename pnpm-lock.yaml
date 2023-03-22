@@ -7,7 +7,7 @@ importers:
 
   .:
     specifiers:
-      '@0no-co/graphql.web': ^0.1.5
+      '@0no-co/graphql.web': ^0.1.6
       '@babel/core': ^7.21.3
       '@rollup/plugin-babel': ^6.0.3
       '@rollup/plugin-buble': ^1.0.2
@@ -33,7 +33,7 @@ importers:
       typescript: ^5.0.2
       vitest: ^0.29.7
     devDependencies:
-      '@0no-co/graphql.web': 0.1.5
+      '@0no-co/graphql.web': 0.1.6
       '@babel/core': 7.21.3
       '@rollup/plugin-babel': 6.0.3_7q3kejatfh3gjru7whmg6sfpeq
       '@rollup/plugin-buble': 1.0.2_rollup@3.20.0
@@ -76,8 +76,8 @@ importers:
 
 packages:
 
-  /@0no-co/graphql.web/0.1.5:
-    resolution: {integrity: sha512-a4b2IoVjFF3QpBYs+rd+6UBxo0prF33TgJoIHMZZI3zaFxIEfaaadDfudAGZNBhk+wK8ocHN0wSLSu5prbGRng==}
+  /@0no-co/graphql.web/0.1.6:
+    resolution: {integrity: sha512-HUFsLTSjX6sTdK+CyoHNs71h0HneugTO6nQS8WwxFGarmAh3doKwZRVY39xLkdOmneSKJZIHRysjf+odHHBFhw==}
     dev: true
 
   /@ampproject/remapping/2.2.0:

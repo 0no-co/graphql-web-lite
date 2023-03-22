@@ -18,7 +18,7 @@ describe('Parser', () => {
 
   it('parses constant default values', () => {
     expect(() => {
-      return parse('query Foo($x: Complex = { a: { b: [ $var ] } }) { field }');
+      return parse('query Foo($x: Complex = { a: { b: [ "test" ] } }) { field }');
     }).not.toThrow();
   });
 
@@ -250,6 +250,7 @@ describe('Parser', () => {
           },
           {
             kind: Kind.STRING,
+            block: false,
             value: 'abc',
           },
         ],
@@ -262,11 +263,13 @@ describe('Parser', () => {
         kind: Kind.LIST,
         values: [
           {
+            block: true,
             kind: Kind.STRING,
             value: 'long',
           },
           {
             kind: Kind.STRING,
+            block: false,
             value: 'short',
           },
         ],
