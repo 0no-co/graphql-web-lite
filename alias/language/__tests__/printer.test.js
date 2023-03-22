@@ -25,24 +25,21 @@ describe('Printer: Query document', () => {
       {
         id
         name
-      }
-    `);
+      }`);
 
     const mutationAST = parse('mutation { id, name }');
     expect(print(mutationAST)).toBe(dedent`
       mutation {
         id
         name
-      }
-    `);
+      }`);
 
     const queryASTWithArtifacts = parse('query ($foo: TestType) @testDirective { id, name }');
     expect(print(queryASTWithArtifacts)).toBe(dedent`
       query ($foo: TestType) @testDirective {
         id
         name
-      }
-    `);
+      }`);
 
     const mutationASTWithArtifacts = parse('mutation ($foo: TestType) @testDirective { id, name }');
     expect(print(mutationASTWithArtifacts)).toBe(dedent`
@@ -73,8 +70,7 @@ describe('Printer: Query document', () => {
         trip(wheelchair: false, arriveBy: false) {
           dateTime
         }
-      }
-    `
+      }`
     );
   });
 
@@ -143,8 +139,7 @@ describe('Printer: Query document', () => {
 
       {
         __typename
-      }
-    `) + '\n'
+      }`)
     );
   });
 });
@@ -227,5 +222,5 @@ function dedentString(string) {
 function dedent(strings, ...values) {
   let str = strings[0];
   for (let i = 1; i < strings.length; ++i) str += values[i - 1] + strings[i]; // interpolation
-  return dedentString(str) + '\n';
+  return dedentString(str);
 }
