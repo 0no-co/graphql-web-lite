@@ -272,40 +272,16 @@ away.
 <details>
 <summary><strong>Full List of Changes</strong></summary>
 
-| Export                     | Changes     | Notes                                                               |
-| -------------------------- | ----------- | ------------------------------------------------------------------- |
-| `getVisitFn`               | _unchanged_ | n/a                                                                 |
-| `visitInParallel`          | _unchanged_ | n/a                                                                 |
-| `BREAK`                    | _unchanged_ | n/a                                                                 |
-| `visit`                    | _modified_  | works recursively and does not detect invalid AST nodes             |
-| `print`                    | _modified_  | won't output any schema nodes and does not detect invalid AST nodes |
-| `printLocation`            | _modified_  | won't output source snippets                                        |
-| `printSourceLocation`      | _modified_  | won't output source snippets                                        |
-| `parse`                    | _modified_  | won't parse schema nodes or throw precise syntax errors             |
-| `parseType`                | _modified_  | won't throw precise syntax errors                                   |
-| `parseValue`               | _modified_  | won't throw precise syntax errors                                   |
-| `GraphQLError`             | _modified_  | doesn't handle locations and Error stacks                           |
-| `syntaxError`              | _removed_   | n/a                                                                 |
-| `printType`                | _removed_   | n/a                                                                 |
-| `printSchema`              | _removed_   | n/a                                                                 |
-| `printIntrospectionSchema` | _removed_   | n/a                                                                 |
-| `lexicographicSortSchema`  | _removed_   | n/a                                                                 |
-| `isSchema`                 | _removed_   | n/a                                                                 |
-| `isInterfaceType`          | _removed_   | n/a                                                                 |
-| `getDescription`           | _removed_   | n/a                                                                 |
-| `findDeprecatedUsages`     | _removed_   | n/a                                                                 |
-| `buildSchema`              | _removed_   | n/a                                                                 |
-| `buildASTSchema`           | _removed_   | n/a                                                                 |
-| `assertSchema`             | _removed_   | n/a                                                                 |
-| `assertInterfaceType`      | _removed_   | n/a                                                                 |
-| `assertCompositeType`      | _removed_   | n/a                                                                 |
-| `assertAbstractType`       | _removed_   | n/a                                                                 |
-| `TokenKind`                | _removed_   | n/a                                                                 |
-| `Token`                    | _removed_   | n/a                                                                 |
-| `Lexer`                    | _removed_   | n/a                                                                 |
-| `GraphQLUnionType`         | _removed_   | n/a                                                                 |
-| `GraphQLInterfaceType`     | _removed_   | n/a                                                                 |
-| `GraphQLInputObjectType`   | _removed_   | n/a                                                                 |
+| Export                | Changes    | Notes                                                               |
+| --------------------- | ---------- | ------------------------------------------------------------------- |
+| `visit`               | _modified_ | works recursively and does not detect invalid AST nodes             |
+| `print`               | _modified_ | won't output any schema nodes and does not detect invalid AST nodes |
+| `printLocation`       | _modified_ | won't output source snippets                                        |
+| `printSourceLocation` | _modified_ | won't output source snippets                                        |
+| `parse`               | _modified_ | won't parse schema nodes or throw precise syntax errors             |
+| `parseType`           | _modified_ | won't throw precise syntax errors                                   |
+| `parseValue`          | _modified_ | won't throw precise syntax errors                                   |
+| `GraphQLError`        | _modified_ | doesn't handle locations and Error stacks                           |
 
 </details>
 
