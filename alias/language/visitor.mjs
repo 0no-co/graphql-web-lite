@@ -1,8 +1,20 @@
 import { BREAK, Kind } from '@0no-co/graphql.web';
-import { getEnterLeaveForKind } from 'graphql/language/visitor';
-
-export { getEnterLeaveForKind, getVisitFn } from 'graphql/language/visitor';
 export { BREAK, visit, Kind } from '@0no-co/graphql.web';
+
+export function getEnterLeaveForKind(visitor, kind) {
+  if (typeof visitor[kind] === 'object') {
+    return visitor[kind];
+  }
+  return {
+    enter: visitor[kind] || visitor.enter,
+    leave: visitor.leave,
+  };
+}
+
+export function getVisitFn(visitor, kind, isLeaving) {
+  const { enter, leave } = getEnterLeaveForKind(visitor, kind);
+  return isLeaving ? leave : enter;
+}
 
 export function visitInParallel(visitors) {
   const skipping = new Array(visitors.length).fill(null);
