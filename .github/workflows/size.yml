@@ -43,6 +43,6 @@ jobs:
       - name: compressed-size-action
         uses: preactjs/compressed-size-action@v2
         with:
-          pattern: '{scripts/buildenv/dist-graphql/assets/vendor.js,scripts/buildenv/dist-lite/assets/vendor.js}'
+          pattern: '{scripts/buildenv/dist-graphql/assets/index.js,scripts/buildenv/dist-lite/assets/index.js}'
           build-script: size-check
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
