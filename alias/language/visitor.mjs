@@ -4,12 +4,6 @@ import { getEnterLeaveForKind } from 'graphql/language/visitor';
 export { getEnterLeaveForKind, getVisitFn } from 'graphql/language/visitor';
 export { BREAK, visit, Kind } from '@0no-co/graphql.web';
 
-/**
- * Creates a new visitor instance which delegates to many visitors to run in
- * parallel. Each visitor will be visited for each node before moving on.
- *
- * If a prior visitor edits a node, no following visitors will see that node.
- */
 export function visitInParallel(visitors) {
   const skipping = new Array(visitors.length).fill(null);
   const mergedVisitor = Object.create(null);
@@ -35,7 +29,7 @@ export function visitInParallel(visitors) {
         const node = args[0];
         for (let i = 0; i < visitors.length; i++) {
           if (skipping[i] === null) {
-            const result = enterList[i]?.apply(visitors[i], args);
+            const result = enterList[i] && enterList[i].apply(visitors[i], args);
             if (result === false) {
               skipping[i] = node;
             } else if (result === BREAK) {
@@ -50,7 +44,7 @@ export function visitInParallel(visitors) {
         const node = args[0];
         for (let i = 0; i < visitors.length; i++) {
           if (skipping[i] === null) {
-            const result = leaveList[i]?.apply(visitors[i], args);
+            const result = leaveList[i] && leaveList[i].apply(visitors[i], args);
             if (result === BREAK) {
               skipping[i] = BREAK;
             } else if (result !== undefined && result !== false) {
