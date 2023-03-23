@@ -196,17 +196,6 @@ export default {
       ],
     }),
 
-    buble({
-      transforms: {
-        stickyRegExp: false,
-        unicodeRegExp: false,
-        dangerousForOf: true,
-        dangerousTaggedTemplateString: true,
-        asyncAwait: false,
-      },
-      objectAssign: 'Object.assign',
-    }),
-
     replace({
       preventAssignment: true,
       values: {
@@ -216,7 +205,7 @@ export default {
 
     terser({
       warnings: true,
-      ecma: 5,
+      ecma: 2015,
       keep_fnames: true,
       ie8: false,
       compress: {
