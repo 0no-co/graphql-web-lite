@@ -26,10 +26,10 @@ export const DangerousChangeType = {
   ARG_DEFAULT_VALUE_CHANGE: 'ARG_DEFAULT_VALUE_CHANGE',
 };
 
-export function findBreakingChanges(oldSchema, newSchema) {
+export function findBreakingChanges(_oldSchema, _newSchema) {
   return [];
 }
 
-export function findDangerousChanges(oldSchema, newSchema) {
+export function findDangerousChanges(_oldSchema, _newSchema) {
   return [];
 }

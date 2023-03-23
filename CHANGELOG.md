@@ -4,6 +4,10 @@ Starting with `16.6.0-1` `graphql-web-lite` is published to match the
 `MAJOR.MINOR.PATCH` version of the aliased `graphql` version on `npm`.
 The prerelease is incremented to indicate changes in `graphql-web-lite`.
 
+## 16.6.0-2
+
+- Replace `utilities/findBreakingChanges` with no-op code.
+
 ## 16.6.0-1
 
 - Replace `type/assertName` with a custom shim.
