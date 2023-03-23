@@ -6,12 +6,13 @@ export default defineConfig({
   plugins: [preact()],
   resolve: {
     alias: {
-      graphql: path.resolve('..', '..', './dist'),
+      graphql: path.resolve('..', '..'),
     },
   },
   build: {
     outDir: './dist-lite',
     rollupOptions: {
+      preserveSymlinks: true,
       output: {
         entryFileNames: `assets/[name].js`,
         chunkFileNames: `assets/[name].js`,

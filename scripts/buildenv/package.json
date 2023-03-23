@@ -4,16 +4,18 @@
   "private": true,
   "scripts": {
     "build": "yarn build:graphql && yarn build:lite",
-    "build:graphql": "vite build",
-    "build:lite": "vite build -c ./vite.alias.config.js"
+    "build:graphql": "vite build --force",
+    "build:lite": "vite build --force -c ./vite.alias.config.js"
   },
   "dependencies": {
+    "@urql/core": "^3.2.2",
+    "@urql/preact": "^3.0.3",
     "graphql": "^16.6.0",
-    "preact": "^10.5.14",
-    "@urql/preact": "^2.0.2"
+    "preact": "^10.5.14"
   },
   "devDependencies": {
+    "@babel/core": "^7.21.3",
     "@preact/preset-vite": "^2.1.0",
-    "vite": "^2.2.4"
+    "vite": "^4.2.1"
   }
 }

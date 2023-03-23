@@ -11,7 +11,7 @@ import babelTransformComputedProps from '../babel/transformComputedProps.mjs';
 import babelTransformDevAssert from '../babel/transformDevAssert.mjs';
 import babelTransformObjectFreeze from '../babel/transformObjectFreeze.mjs';
 
-import { packageMetadata, version } from './packageMetadata.mjs';
+import { version } from './packageMetadata.mjs';
 import { generateImportMap } from './importMap.mjs';
 
 const cwd = process.cwd();
@@ -104,26 +104,6 @@ function buildPlugin() {
       }
 
       return null;
-    },
-
-    async renderStart() {
-      this.emitFile({
-        type: 'asset',
-        fileName: 'package.json',
-        source: packageMetadata,
-      });
-
-      this.emitFile({
-        type: 'asset',
-        fileName: 'README.md',
-        source: await fs.readFile('README.md'),
-      });
-
-      this.emitFile({
-        type: 'asset',
-        fileName: 'LICENSE',
-        source: await fs.readFile('./LICENSE.md'),
-      });
     },
 
     async renderChunk(_code, { fileName }) {
@@ -238,7 +218,7 @@ export default {
     {
       chunkFileNames: '[name].js',
       entryFileNames: '[name].js',
-      dir: './dist',
+      dir: '.',
       exports: 'named',
       format: 'cjs',
       minifyInternalExports: false,
@@ -248,7 +228,7 @@ export default {
     {
       chunkFileNames: '[name].mjs',
       entryFileNames: '[name].mjs',
-      dir: './dist',
+      dir: '.',
       exports: 'named',
       format: 'esm',
       minifyInternalExports: false,

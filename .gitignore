@@ -6,3 +6,12 @@ dist/
 /cypress/screenshots/**
 /scripts/buildenv/dist-*
 yarn.lock
+
+!/alias/
+!/scripts/
+/*/**/*.d.ts
+/*/**/*.js
+/*/**/*.mjs
+/*.d.ts
+/*.js
+/*.mjs
