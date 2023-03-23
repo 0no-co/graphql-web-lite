@@ -1,3 +1,14 @@
+
+/*/**/*.d.ts
+/*/**/*.js
+/*/**/*.mjs
+/*.d.ts
+/*.js
+/*.mjs
+
+!/alias/**/*
+!/scripts/**/*
+
 yarn-error.log
 node_modules/
 coverage/
@@ -6,12 +17,3 @@ dist/
 /cypress/screenshots/**
 /scripts/buildenv/dist-*
 yarn.lock
-
-!/alias/
-!/scripts/
-/*/**/*.d.ts
-/*/**/*.js
-/*/**/*.mjs
-/*.d.ts
-/*.js
-/*.mjs
