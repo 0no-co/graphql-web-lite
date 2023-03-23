@@ -12,7 +12,8 @@ import babelTransformComputedProps from '../babel/transformComputedProps.mjs';
 import babelTransformDevAssert from '../babel/transformDevAssert.mjs';
 import babelTransformObjectFreeze from '../babel/transformObjectFreeze.mjs';
 
-import { importMap, packageMetadata, version } from './packageMetadata.mjs';
+import { packageMetadata, version } from './packageMetadata.mjs';
+import { generateImportMap } from './importMap.mjs';
 
 const cwd = process.cwd();
 const graphqlModule = path.posix.join(cwd, 'node_modules/graphql/');
@@ -23,27 +24,7 @@ const EXTERNAL = 'graphql';
 const externalModules = ['dns', 'fs', 'path', 'url'];
 const externalPredicate = new RegExp(`^(${externalModules.join('|')})($|/)`);
 
-const exports = {};
-
-for (const key in importMap) {
-  const { from, local } = importMap[key];
-  if (/\/jsutils\//g.test(from)) continue;
-
-  const name = from.replace(/^graphql\//, '');
-  exports[name] = (exports[name] || '') + `export { ${key} } from '${EXTERNAL}'\n`;
-
-  const parts = name.split('/');
-  for (let i = parts.length - 1; i > 0; i--) {
-    const name = `${parts.slice(0, i).join('/')}/index`;
-    const from = `./${parts.slice(i).join('/')}`;
-    exports[name] = (exports[name] || '') + `export { ${local} } from '${from}'\n`;
-  }
-
-  const index = `export { ${local} } from './${name}'\n`;
-  exports.index = (exports.index || '') + index;
-}
-
-const manualChunks = (id, utils) => {
+function manualChunks(id, utils) {
   let chunk;
   if (id.startsWith(graphqlModule)) {
     chunk = id.slice(graphqlModule.length);
@@ -59,13 +40,132 @@ const manualChunks = (id, utils) => {
 
   const { importers } = utils.getModuleInfo(id);
   return importers.length === 1 ? manualChunks(importers[0], utils) : 'shared';
-};
+}
+
+function buildPlugin() {
+  const exports = {};
+  return {
+    async buildStart(options) {
+      const importMap = await generateImportMap();
+
+      for (const key in importMap) {
+        const { from, local } = importMap[key];
+        if (/\/jsutils\//g.test(from)) continue;
+
+        const name = from.replace(/^graphql\//, '');
+        exports[name] = (exports[name] || '') + `export { ${key} } from '${EXTERNAL}'\n`;
+
+        const parts = name.split('/');
+        for (let i = parts.length - 1; i > 0; i--) {
+          const name = `${parts.slice(0, i).join('/')}/index`;
+          const from = `./${parts.slice(i).join('/')}`;
+          if (from !== './index')
+            exports[name] = (exports[name] || '') + `export { ${local} } from '${from}'\n`;
+        }
+
+        const index = `export { ${local} } from './${name}'\n`;
+        exports.index = (exports.index || '') + index;
+      }
+
+      if (typeof options.input !== 'object') options.input = {};
+
+      for (const key in exports) {
+        options.input[key] = path.posix.join('./virtual', key);
+      }
+    },
+
+    async load(id) {
+      if (!id.startsWith(virtualModule)) return null;
+      const entry = path.posix.relative(virtualModule, id).replace(/\.m?js$/, '');
+      if (entry === 'version') return version;
+      return exports[entry] || null;
+    },
+
+    async resolveId(source, importer) {
+      if (!source.startsWith('.') && !source.startsWith('virtual/')) return null;
+
+      const target = path.posix.join(importer ? path.posix.dirname(importer) : cwd, source);
+
+      const virtualEntry = path.posix.relative(virtualModule, target);
+      if (!virtualEntry.startsWith('../')) {
+        const aliasSource = path.posix.join(aliasModule, virtualEntry);
+        const alias = await this.resolve(aliasSource, undefined, {
+          skipSelf: true,
+        });
+        return alias || target;
+      }
+
+      const graphqlEntry = path.posix.relative(graphqlModule, target);
+      if (!graphqlEntry.startsWith('../')) {
+        const aliasSource = path.posix.join(aliasModule, graphqlEntry);
+        const alias = await this.resolve(aliasSource, undefined, {
+          skipSelf: true,
+        });
+        return alias || target;
+      }
+
+      return null;
+    },
+
+    async renderStart() {
+      this.emitFile({
+        type: 'asset',
+        fileName: 'package.json',
+        source: packageMetadata,
+      });
+
+      this.emitFile({
+        type: 'asset',
+        fileName: 'README.md',
+        source: await fs.readFile('README.md'),
+      });
+
+      this.emitFile({
+        type: 'asset',
+        fileName: 'LICENSE',
+        source: await fs.readFile('./LICENSE.md'),
+      });
+    },
+
+    async renderChunk(_code, { fileName }) {
+      const name = fileName.replace(/\.m?js$/, '');
+
+      const getContents = async extension => {
+        try {
+          const name = fileName.replace(/\.m?js$/, '');
+          const contents = await fs.readFile(path.join(graphqlModule, name + extension));
+          return contents;
+        } catch (_error) {
+          return null;
+        }
+      };
+
+      const dts = await getContents('.d.ts');
+      const flow = await getContents('.js.flow');
+
+      if (dts) {
+        this.emitFile({
+          type: 'asset',
+          fileName: name + '.d.ts',
+          source: dts,
+        });
+      }
+
+      if (flow) {
+        this.emitFile({
+          type: 'asset',
+          fileName: name + '.js.flow',
+          source: flow,
+        });
+      }
+
+      return null;
+    },
+  };
+}
 
 export default {
-  input: Object.keys(exports).reduce((input, key) => {
-    input[key] = path.posix.join('./virtual', key);
-    return input;
-  }, {}),
+  input: {},
   external(id) {
     return externalPredicate.test(id);
   },
@@ -75,95 +175,7 @@ export default {
     moduleSideEffects: false,
   },
   plugins: [
-    {
-      async load(id) {
-        if (!id.startsWith(virtualModule)) return null;
-        const entry = path.posix.relative(virtualModule, id).replace(/\.m?js$/, '');
-        if (entry === 'version') return version;
-        return exports[entry] || null;
-      },
-
-      async resolveId(source, importer) {
-        if (!source.startsWith('.') && !source.startsWith('virtual/')) return null;
-
-        const target = path.posix.join(importer ? path.posix.dirname(importer) : cwd, source);
-
-        const virtualEntry = path.posix.relative(virtualModule, target);
-        if (!virtualEntry.startsWith('../')) {
-          const aliasSource = path.posix.join(aliasModule, virtualEntry);
-          const alias = await this.resolve(aliasSource, undefined, {
-            skipSelf: true,
-          });
-          return alias || target;
-        }
-
-        const graphqlEntry = path.posix.relative(graphqlModule, target);
-        if (!graphqlEntry.startsWith('../')) {
-          const aliasSource = path.posix.join(aliasModule, graphqlEntry);
-          const alias = await this.resolve(aliasSource, undefined, {
-            skipSelf: true,
-          });
-          return alias || target;
-        }
-
-        return null;
-      },
-
-      async renderStart() {
-        this.emitFile({
-          type: 'asset',
-          fileName: 'package.json',
-          source: packageMetadata,
-        });
-
-        this.emitFile({
-          type: 'asset',
-          fileName: 'README.md',
-          source: await fs.readFile('README.md'),
-        });
-
-        this.emitFile({
-          type: 'asset',
-          fileName: 'LICENSE',
-          source: await fs.readFile('./LICENSE.md'),
-        });
-      },
-
-      async renderChunk(_code, { fileName }) {
-        const name = fileName.replace(/\.m?js$/, '');
-
-        const getContents = async extension => {
-          try {
-            const name = fileName.replace(/\.m?js$/, '');
-            const contents = await fs.readFile(path.join(graphqlModule, name + extension));
-            return contents;
-          } catch (_error) {
-            return null;
-          }
-        };
-
-        const dts = await getContents('.d.ts');
-        const flow = await getContents('.js.flow');
-
-        if (dts) {
-          this.emitFile({
-            type: 'asset',
-            fileName: name + '.d.ts',
-            source: dts,
-          });
-        }
-
-        if (flow) {
-          this.emitFile({
-            type: 'asset',
-            fileName: name + '.js.flow',
-            source: flow,
-          });
-        }
-
-        return null;
-      },
-    },
+    buildPlugin(),
 
     resolve({
       extensions: ['.mjs', '.js'],
