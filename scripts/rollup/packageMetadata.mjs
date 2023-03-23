@@ -11,12 +11,12 @@ const versionInfo = {
   major: parsedVersion.major,
   minor: parsedVersion.minor,
   patch: parsedVersion.patch,
-  preReleaseTag: 'lite',
+  preReleaseTag: parsedVersion.prerelease ? parsedVersion.prerelease.join('.') : null,
   lite: true,
 };
 
 export const version = `
-export const version = ${JSON.stringify(rootPkg.version)};
+export const version = ${JSON.stringify(parsedVersion.raw)};
 export const versionInfo = ${JSON.stringify(versionInfo)};
 `.trim();
 
