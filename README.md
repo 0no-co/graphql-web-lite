@@ -50,8 +50,8 @@ In your `package.json` file you can define your `graphql` installation to use
 ```diff
 {
   "dependencies": {
--    "graphql": "^15.5.0"
-+    "graphql": "npm:graphql-web-lite@^15.5.1001"
+-    "graphql": "^16.6.0"
++    "graphql": "npm:graphql-web-lite@^16.6.0-3"
   }
 }
 ```
