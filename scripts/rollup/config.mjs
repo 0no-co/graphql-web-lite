@@ -2,7 +2,6 @@ import * as path from 'path';
 import { promises as fs } from 'fs';
 
 import resolve from '@rollup/plugin-node-resolve';
-import buble from '@rollup/plugin-buble';
 import replace from '@rollup/plugin-replace';
 import terser from '@rollup/plugin-terser';
 import { babel } from '@rollup/plugin-babel';
