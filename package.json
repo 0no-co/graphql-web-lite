@@ -51,6 +51,7 @@
     "eslint-config-prettier": "^8.7.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-tsdoc": "^0.2.17",
+    "graphql15": "npm:graphql@^15.8.0",
     "graphql": "~16.6.0",
     "husky-v4": "^4.3.8",
     "lint-staged": "^11.1.2",

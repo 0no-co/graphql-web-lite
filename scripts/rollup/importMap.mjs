@@ -132,5 +132,5 @@ function mergeTraces(traces) {
 }
 
 export async function generateImportMap() {
-  return mergeTraces([await traceImports('graphql')]);
+  return mergeTraces(await Promise.all([traceImports('graphql'), traceImports('graphql15')]));
 }
