@@ -21,10 +21,15 @@ for implementing GraphQL in client-side and server-side JavaScript applications.
 can cause bloat for client-side apps, where we'd rather choose lower bundlesize impact
 over fidelity.
 
-`graphql-web-lite` is an **experimental** library, providing an alias package that can
-be swapped in for the standard `graphql` package in client-side applications.
+`graphql-web-lite` provides an alias package that can be swapped in for the standard
+`graphql` package in client-side applications.
 It aims to reduce the size of imports that are in common use by GraphQL clients and
 users, while still providing most `graphql` exports that are used in other contexts.
+
+It replaces the default `language` exports with
+[`@0no-co/graphql.web`](https://github.com/0no-co/graphql.web) for a leaner
+parser, printer, and visitor, which only support the GraphQL query language and
+are tested to 100% coverage and built to match GraphQL.js’ performance.
 
 ## Installation
 
