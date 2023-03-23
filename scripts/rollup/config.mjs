@@ -235,6 +235,7 @@ export default {
   treeshake: 'smallest',
   shimMissingExports: false,
   preserveEntrySignatures: 'allow-extension',
+  preserveSymlinks: true,
 
   output: [
     {
