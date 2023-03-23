@@ -2,7 +2,6 @@ import * as path from 'path';
 import { promises as fs } from 'fs';
 
 import resolve from '@rollup/plugin-node-resolve';
-import buble from '@rollup/plugin-buble';
 import replace from '@rollup/plugin-replace';
 import terser from '@rollup/plugin-terser';
 import { babel } from '@rollup/plugin-babel';
@@ -196,17 +195,6 @@ export default {
       ],
     }),
 
-    buble({
-      transforms: {
-        stickyRegExp: false,
-        unicodeRegExp: false,
-        dangerousForOf: true,
-        dangerousTaggedTemplateString: true,
-        asyncAwait: false,
-      },
-      objectAssign: 'Object.assign',
-    }),
-
     replace({
       preventAssignment: true,
       values: {
@@ -216,10 +204,10 @@ export default {
 
     terser({
       warnings: true,
-      ecma: 5,
+      ecma: 2016,
       keep_fnames: true,
-      ie8: false,
       compress: {
+        module: true,
         pure_getters: true,
         toplevel: true,
         booleans_as_integers: false,
@@ -232,10 +220,7 @@ export default {
         conditionals: false,
         join_vars: false,
       },
-      mangle: {
-        module: true,
-        keep_fnames: true,
-      },
+      mangle: false,
       output: {
         beautify: true,
         braces: true,
