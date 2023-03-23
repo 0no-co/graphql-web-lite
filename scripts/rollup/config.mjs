@@ -12,7 +12,8 @@ import babelTransformComputedProps from '../babel/transformComputedProps.mjs';
 import babelTransformDevAssert from '../babel/transformDevAssert.mjs';
 import babelTransformObjectFreeze from '../babel/transformObjectFreeze.mjs';
 
-import { importMap, packageMetadata, version } from './packageMetadata.mjs';
+import { packageMetadata, version } from './packageMetadata.mjs';
+import { generateImportMap } from './importMap.mjs';
 
 const cwd = process.cwd();
 const graphqlModule = path.posix.join(cwd, 'node_modules/graphql/');
@@ -23,240 +24,248 @@ const EXTERNAL = 'graphql';
 const externalModules = ['dns', 'fs', 'path', 'url'];
 const externalPredicate = new RegExp(`^(${externalModules.join('|')})($|/)`);
 
-const exports = {};
+export default async function config() {
+  const importMap = await generateImportMap();
+  const exports = {};
+  const input = {};
 
-for (const key in importMap) {
-  const { from, local } = importMap[key];
-  if (/\/jsutils\//g.test(from)) continue;
+  for (const key in importMap) {
+    const { from, local } = importMap[key];
+    if (/\/jsutils\//g.test(from)) continue;
 
-  const name = from.replace(/^graphql\//, '');
-  exports[name] = (exports[name] || '') + `export { ${key} } from '${EXTERNAL}'\n`;
+    const name = from.replace(/^graphql\//, '');
+    exports[name] = (exports[name] || '') + `export { ${key} } from '${EXTERNAL}'\n`;
 
-  const parts = name.split('/');
-  for (let i = parts.length - 1; i > 0; i--) {
-    const name = `${parts.slice(0, i).join('/')}/index`;
-    const from = `./${parts.slice(i).join('/')}`;
-    exports[name] = (exports[name] || '') + `export { ${local} } from '${from}'\n`;
+    const parts = name.split('/');
+    for (let i = parts.length - 1; i > 0; i--) {
+      const name = `${parts.slice(0, i).join('/')}/index`;
+      const from = `./${parts.slice(i).join('/')}`;
+      if (from !== './index')
+        exports[name] = (exports[name] || '') + `export { ${local} } from '${from}'\n`;
+    }
+
+    const index = `export { ${local} } from './${name}'\n`;
+    exports.index = (exports.index || '') + index;
   }
 
-  const index = `export { ${local} } from './${name}'\n`;
-  exports.index = (exports.index || '') + index;
-}
-
-const manualChunks = (id, utils) => {
-  let chunk;
-  if (id.startsWith(graphqlModule)) {
-    chunk = id.slice(graphqlModule.length);
-  } else if (id.startsWith(virtualModule)) {
-    chunk = id.slice(virtualModule.length);
-  } else if (id.startsWith(aliasModule)) {
-    chunk = id.slice(aliasModule.length);
-  }
-
-  if (chunk) {
-    return chunk.replace(/\.m?js$/, '');
-  }
-
-  const { importers } = utils.getModuleInfo(id);
-  return importers.length === 1 ? manualChunks(importers[0], utils) : 'shared';
-};
-
-export default {
-  input: Object.keys(exports).reduce((input, key) => {
+  for (const key in exports) {
     input[key] = path.posix.join('./virtual', key);
-    return input;
-  }, {}),
-  external(id) {
-    return externalPredicate.test(id);
-  },
-  treeshake: {
-    unknownGlobalSideEffects: false,
-    tryCatchDeoptimization: false,
-    moduleSideEffects: false,
-  },
-  plugins: [
-    {
-      async load(id) {
-        if (!id.startsWith(virtualModule)) return null;
-        const entry = path.posix.relative(virtualModule, id).replace(/\.m?js$/, '');
-        if (entry === 'version') return version;
-        return exports[entry] || null;
-      },
+  }
 
-      async resolveId(source, importer) {
-        if (!source.startsWith('.') && !source.startsWith('virtual/')) return null;
+  function manualChunks(id, utils) {
+    let chunk;
+    if (id.startsWith(graphqlModule)) {
+      chunk = id.slice(graphqlModule.length);
+    } else if (id.startsWith(virtualModule)) {
+      chunk = id.slice(virtualModule.length);
+    } else if (id.startsWith(aliasModule)) {
+      chunk = id.slice(aliasModule.length);
+    }
 
-        const target = path.posix.join(importer ? path.posix.dirname(importer) : cwd, source);
+    if (chunk) {
+      return chunk.replace(/\.m?js$/, '');
+    }
 
-        const virtualEntry = path.posix.relative(virtualModule, target);
-        if (!virtualEntry.startsWith('../')) {
-          const aliasSource = path.posix.join(aliasModule, virtualEntry);
-          const alias = await this.resolve(aliasSource, undefined, {
-            skipSelf: true,
-          });
-          return alias || target;
-        }
+    const { importers } = utils.getModuleInfo(id);
+    return importers.length === 1 ? manualChunks(importers[0], utils) : 'shared';
+  }
 
-        const graphqlEntry = path.posix.relative(graphqlModule, target);
-        if (!graphqlEntry.startsWith('../')) {
-          const aliasSource = path.posix.join(aliasModule, graphqlEntry);
-          const alias = await this.resolve(aliasSource, undefined, {
-            skipSelf: true,
-          });
-          return alias || target;
-        }
+  return {
+    input,
+    external(id) {
+      return externalPredicate.test(id);
+    },
+    treeshake: {
+      unknownGlobalSideEffects: false,
+      tryCatchDeoptimization: false,
+      moduleSideEffects: false,
+    },
+    plugins: [
+      {
+        async buildStart(options) {},
 
-        return null;
-      },
+        async load(id) {
+          if (!id.startsWith(virtualModule)) return null;
+          const entry = path.posix.relative(virtualModule, id).replace(/\.m?js$/, '');
+          if (entry === 'version') return version;
+          return exports[entry] || null;
+        },
 
-      async renderStart() {
-        this.emitFile({
-          type: 'asset',
-          fileName: 'package.json',
-          source: packageMetadata,
-        });
+        async resolveId(source, importer) {
+          if (!source.startsWith('.') && !source.startsWith('virtual/')) return null;
 
-        this.emitFile({
-          type: 'asset',
-          fileName: 'README.md',
-          source: await fs.readFile('README.md'),
-        });
+          const target = path.posix.join(importer ? path.posix.dirname(importer) : cwd, source);
 
-        this.emitFile({
-          type: 'asset',
-          fileName: 'LICENSE',
-          source: await fs.readFile('./LICENSE.md'),
-        });
-      },
-
-      async renderChunk(_code, { fileName }) {
-        const name = fileName.replace(/\.m?js$/, '');
-
-        const getContents = async extension => {
-          try {
-            const name = fileName.replace(/\.m?js$/, '');
-            const contents = await fs.readFile(path.join(graphqlModule, name + extension));
-            return contents;
-          } catch (_error) {
-            return null;
+          const virtualEntry = path.posix.relative(virtualModule, target);
+          if (!virtualEntry.startsWith('../')) {
+            const aliasSource = path.posix.join(aliasModule, virtualEntry);
+            const alias = await this.resolve(aliasSource, undefined, {
+              skipSelf: true,
+            });
+            return alias || target;
           }
-        };
 
-        const dts = await getContents('.d.ts');
-        const flow = await getContents('.js.flow');
+          const graphqlEntry = path.posix.relative(graphqlModule, target);
+          if (!graphqlEntry.startsWith('../')) {
+            const aliasSource = path.posix.join(aliasModule, graphqlEntry);
+            const alias = await this.resolve(aliasSource, undefined, {
+              skipSelf: true,
+            });
+            return alias || target;
+          }
 
-        if (dts) {
+          return null;
+        },
+
+        async renderStart() {
           this.emitFile({
             type: 'asset',
-            fileName: name + '.d.ts',
-            source: dts,
+            fileName: 'package.json',
+            source: packageMetadata,
           });
-        }
 
-        if (flow) {
           this.emitFile({
             type: 'asset',
-            fileName: name + '.js.flow',
-            source: flow,
+            fileName: 'README.md',
+            source: await fs.readFile('README.md'),
           });
-        }
 
-        return null;
+          this.emitFile({
+            type: 'asset',
+            fileName: 'LICENSE',
+            source: await fs.readFile('./LICENSE.md'),
+          });
+        },
+
+        async renderChunk(_code, { fileName }) {
+          const name = fileName.replace(/\.m?js$/, '');
+
+          const getContents = async extension => {
+            try {
+              const name = fileName.replace(/\.m?js$/, '');
+              const contents = await fs.readFile(path.join(graphqlModule, name + extension));
+              return contents;
+            } catch (_error) {
+              return null;
+            }
+          };
+
+          const dts = await getContents('.d.ts');
+          const flow = await getContents('.js.flow');
+
+          if (dts) {
+            this.emitFile({
+              type: 'asset',
+              fileName: name + '.d.ts',
+              source: dts,
+            });
+          }
+
+          if (flow) {
+            this.emitFile({
+              type: 'asset',
+              fileName: name + '.js.flow',
+              source: flow,
+            });
+          }
+
+          return null;
+        },
       },
-    },
 
-    resolve({
-      extensions: ['.mjs', '.js'],
-      mainFields: ['module', 'browser', 'main'],
-      preferBuiltins: false,
-      browser: true,
-    }),
+      resolve({
+        extensions: ['.mjs', '.js'],
+        mainFields: ['module', 'browser', 'main'],
+        preferBuiltins: false,
+        browser: true,
+      }),
 
-    babel({
-      babelrc: false,
-      babelHelpers: 'bundled',
-      presets: [],
-      plugins: [
-        babelTransformDevAssert,
-        babelTransformObjectFreeze,
-        babelTransformComputedProps,
-        babelModularGraphQL,
-      ],
-    }),
+      babel({
+        babelrc: false,
+        babelHelpers: 'bundled',
+        presets: [],
+        plugins: [
+          babelTransformDevAssert,
+          babelTransformObjectFreeze,
+          babelTransformComputedProps,
+          babelModularGraphQL,
+        ],
+      }),
 
-    buble({
-      transforms: {
-        stickyRegExp: false,
-        unicodeRegExp: false,
-        dangerousForOf: true,
-        dangerousTaggedTemplateString: true,
-        asyncAwait: false,
-      },
-      objectAssign: 'Object.assign',
-    }),
+      buble({
+        transforms: {
+          stickyRegExp: false,
+          unicodeRegExp: false,
+          dangerousForOf: true,
+          dangerousTaggedTemplateString: true,
+          asyncAwait: false,
+        },
+        objectAssign: 'Object.assign',
+      }),
 
-    replace({
-      preventAssignment: true,
-      values: {
-        'process.env.NODE_ENV': JSON.stringify('production'),
-      },
-    }),
+      replace({
+        preventAssignment: true,
+        values: {
+          'process.env.NODE_ENV': JSON.stringify('production'),
+        },
+      }),
 
-    terser({
-      warnings: true,
-      ecma: 5,
-      keep_fnames: true,
-      ie8: false,
-      compress: {
-        pure_getters: true,
-        toplevel: true,
-        booleans_as_integers: false,
+      terser({
+        warnings: true,
+        ecma: 5,
         keep_fnames: true,
-        keep_fargs: true,
-        if_return: false,
         ie8: false,
-        sequences: false,
-        loops: false,
-        conditionals: false,
-        join_vars: false,
-      },
-      mangle: {
-        module: true,
-        keep_fnames: true,
-      },
-      output: {
-        beautify: true,
-        braces: true,
-        indent_level: 2,
-      },
-    }),
-  ],
+        compress: {
+          pure_getters: true,
+          toplevel: true,
+          booleans_as_integers: false,
+          keep_fnames: true,
+          keep_fargs: true,
+          if_return: false,
+          ie8: false,
+          sequences: false,
+          loops: false,
+          conditionals: false,
+          join_vars: false,
+        },
+        mangle: {
+          module: true,
+          keep_fnames: true,
+        },
+        output: {
+          beautify: true,
+          braces: true,
+          indent_level: 2,
+        },
+      }),
+    ],
 
-  treeshake: 'smallest',
-  shimMissingExports: false,
-  preserveEntrySignatures: 'allow-extension',
-  preserveSymlinks: true,
+    treeshake: 'smallest',
+    shimMissingExports: false,
+    preserveEntrySignatures: 'allow-extension',
+    preserveSymlinks: true,
 
-  output: [
-    {
-      chunkFileNames: '[name].js',
-      entryFileNames: '[name].js',
-      dir: './dist',
-      exports: 'named',
-      format: 'cjs',
-      minifyInternalExports: false,
-      hoistTransitiveImports: false,
-      manualChunks,
-    },
-    {
-      chunkFileNames: '[name].mjs',
-      entryFileNames: '[name].mjs',
-      dir: './dist',
-      exports: 'named',
-      format: 'esm',
-      minifyInternalExports: false,
-      hoistTransitiveImports: false,
-      manualChunks,
-    },
-  ],
-};
+    output: [
+      {
+        chunkFileNames: '[name].js',
+        entryFileNames: '[name].js',
+        dir: './dist',
+        exports: 'named',
+        format: 'cjs',
+        minifyInternalExports: false,
+        hoistTransitiveImports: false,
+        manualChunks,
+      },
+      {
+        chunkFileNames: '[name].mjs',
+        entryFileNames: '[name].mjs',
+        dir: './dist',
+        exports: 'named',
+        format: 'esm',
+        minifyInternalExports: false,
+        hoistTransitiveImports: false,
+        manualChunks,
+      },
+    ],
+  };
+}

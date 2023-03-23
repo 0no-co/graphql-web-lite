@@ -1,9 +1,6 @@
 import semver from 'semver';
-import * as url from 'url';
-import * as path from 'path';
 import { createRequire } from 'node:module';
 
-const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
 
 const rootPkg = require('../../package.json');
@@ -39,5 +36,3 @@ export const packageMetadata = JSON.stringify(
   null,
   2
 );
-
-export const importMap = require('./importMap.json');
