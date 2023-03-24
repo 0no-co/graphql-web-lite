@@ -4,6 +4,12 @@ Starting with `16.6.0-1` `graphql-web-lite` is published to match the
 `MAJOR.MINOR.PATCH` version of the aliased `graphql` version on `npm`.
 The prerelease is incremented to indicate changes in `graphql-web-lite`.
 
+## 16.6.0-4
+
+- Move `@0no-co/graphql.web` to dependencies and externalize it in the output
+  dist files.
+- Upgrade to `@0no-co/graphql.web@^1.0.0`
+
 ## 16.6.0-3
 
 - Fix incorrect `package.json:engines.node` entry.
