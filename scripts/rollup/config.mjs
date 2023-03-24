@@ -20,7 +20,7 @@ const virtualModule = path.posix.join(cwd, 'virtual/');
 const aliasModule = path.posix.join(cwd, 'alias/');
 
 const EXTERNAL = 'graphql';
-const externalModules = ['dns', 'fs', 'path', 'url'];
+const externalModules = ['dns', 'fs', 'path', 'url', '@0no-co/graphql.web'];
 const externalPredicate = new RegExp(`^(${externalModules.join('|')})($|/)`);
 
 function manualChunks(id, utils) {
