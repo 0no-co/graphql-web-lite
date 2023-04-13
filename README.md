@@ -31,6 +31,14 @@ It replaces the default `language` exports with
 parser, printer, and visitor, which only support the GraphQL query language and
 are tested to 100% coverage and built to match GraphQL.js’ performance.
 
+In an average app using the GraphQL library for a GraphQL client aliasing this
+package could save you 7kB gzip effortlessly.
+
+> **Note:** If you’re using `@urql/core@^4` you’re already benefitting from
+> `@0no-co/graphql.web`’s size reduction and aliasing `graphql-web-lite` will
+> only benefit you if you import from `graphql` in any of your other code or
+> libraries.
+
 ## Installation
 
 `graphql-web-lite` mirrors the folder structure of the regular `graphql` package and
@@ -288,21 +296,10 @@ away.
 ### Bundlesize Impact
 
 Most GraphQL client-side libraries use the following common set of imports from the `graphql` library.
-Assuming a transformation like [`babel-plugin-modular-graphql`](https://github.com/kitten/babel-plugin-modular-graphql/)
-or granular imports in general this creates a short list of utilities.
 
 ```js
-export { valueFromASTUntyped } from 'graphql/utilities/valueFromASTUntyped.mjs';
-export { GraphQLError } from 'graphql/error/GraphQLError.mjs';
-export { Kind } from 'graphql/language/kinds.mjs';
-export { parse } from 'graphql/language/parser.mjs';
-export { print } from 'graphql/language/printer.mjs';
-export { visit } from 'graphql/language/visitor.mjs';
+export { BREAK, isSelectionNode, parse, print, GraphQLError, Kind, visit } from 'graphql';
 ```
 
-The minzipped size of the imports is about `11.2kB` in a given output bundle, which assumes all the above imports are
-in use. When the GraphQL language parser is dropped from the bundle, for instance by precompiling queries and excluding
-it in a compilation step, the resulting minzipped size drops to `5.55kB`.
-
-When `graphql-web-lite` replaces the `graphql` package the minzipped size drops from the `11.2kB` figure down to `5.44kB`,
-and `3.19kB` without the parser.
+The minzipped size of the imports is about `10kB` in a given output bundle, which assumes all the above imports are
+in use. When `graphql-web-lite` replaces the `graphql` package the minzipped size drops to about `3kB`.
