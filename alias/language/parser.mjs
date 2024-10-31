@@ -320,10 +320,34 @@ const _parse = makeParser(root);
 const _parseValue = makeParser(value);
 const _parseType = makeParser(type);
 
-export function parse(input) {
+export function parse(input, options) {
   const result = _parse(input);
   if (result == null) throw new GraphQLError('Syntax Error');
-  return result;
+  if (options && options.noLocation) return result;
+
+  let loc;
+  return {
+    ...result,
+    set loc(_loc) {
+      loc = _loc;
+    },
+    get loc() {
+      if (!loc) {
+        loc = {
+          start: 0,
+          end: input.length,
+          startToken: undefined,
+          endToken: undefined,
+          source: {
+            body: input,
+            name: 'graphql-web-lite',
+            locationOffset: { line: 1, column: 1 },
+          },
+        };
+      }
+      return loc;
+    },
+  };
 }
 
 export function parseValue(input) {
