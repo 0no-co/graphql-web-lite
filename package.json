@@ -1,7 +1,7 @@
 {
   "name": "graphql-web-lite",
   "description": "graphql npm package slimmed down for client-side libraries",
-  "version": "16.6.0-4",
+  "version": "16.11.0-1",
   "license": "MIT",
   "scripts": {
     "prepare": "node ./scripts/prepare.js",
@@ -55,7 +55,7 @@
       }
     },
     "overrides": {
-      "graphql": "~16.6.0"
+      "graphql": "~16.11.0"
     }
   },
   "dependencies": {
@@ -64,8 +64,8 @@
   "devDependencies": {
     "@babel/core": "^7.21.3",
     "@rollup/plugin-babel": "^6.0.3",
-    "@rollup/plugin-node-resolve": "^15.0.1",
-    "@rollup/plugin-replace": "^5.0.2",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@rollup/plugin-replace": "^6.0.2",
     "@rollup/plugin-terser": "^0.4.0",
     "@typescript-eslint/eslint-plugin": "^5.55.0",
     "@typescript-eslint/parser": "^5.55.0",
@@ -76,14 +76,14 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-tsdoc": "^0.2.17",
     "glob": "^9.3.2",
-    "graphql": "~16.6.0",
+    "graphql": "~16.11.0",
     "graphql15": "npm:graphql@^15.8.0",
     "husky-v4": "^4.3.8",
     "lint-staged": "^11.1.2",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.8.4",
     "rimraf": "^4.4.1",
-    "rollup": "^3.20.0",
+    "rollup": "^4.50.1",
     "semver": "^7.3.5",
     "sucrase": "^3.30.0",
     "typescript": "^5.0.2",

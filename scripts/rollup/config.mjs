@@ -149,6 +149,8 @@ export default {
     return externalPredicate.test(id);
   },
   treeshake: {
+    preset: 'smallest',
+    propertyReadSideEffects: false,
     unknownGlobalSideEffects: false,
     tryCatchDeoptimization: false,
     moduleSideEffects: false,
@@ -186,6 +188,7 @@ export default {
       warnings: true,
       ecma: 2016,
       keep_fnames: true,
+      module: true,
       compress: {
         module: true,
         pure_getters: true,
@@ -209,7 +212,6 @@ export default {
     }),
   ],
 
-  treeshake: 'smallest',
   shimMissingExports: false,
   preserveEntrySignatures: 'allow-extension',
   preserveSymlinks: true,

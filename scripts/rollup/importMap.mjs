@@ -76,6 +76,7 @@ function isDeclarationEqual(a, b) {
 }
 
 function mergeTraces(traces) {
+  const lastTrace = traces[traces.length - 1];
   const trace = {};
 
   // Iterate over all known filenames in all traces
@@ -102,6 +103,9 @@ function mergeTraces(traces) {
             const firstIndex = all.findIndex(item => isDeclarationEqual(item, val));
             return firstIndex === index;
           });
+      } else if (lastTrace[id][name]) {
+        // If it only exists in the last trace (the graphql@16 / latest one, we still include it
+        exports[name] = [lastTrace[id][name]];
       }
     }
 
@@ -132,5 +136,8 @@ function mergeTraces(traces) {
 }
 
 export async function generateImportMap() {
-  return mergeTraces(await Promise.all([traceImports('graphql'), traceImports('graphql15')]));
+  return mergeTraces(await Promise.all([
+    traceImports('graphql15'),
+    traceImports('graphql'),
+  ]));
 }
